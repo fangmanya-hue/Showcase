@@ -1,8 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { Empty } from '@/shared/blocks/common';
 import { PanelCard } from '@/shared/blocks/panel';
 import { TableCard } from '@/shared/blocks/table';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   Credit,
   CreditStatus,
@@ -26,7 +28,7 @@ export default async function CreditsPage({
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.credits');
@@ -121,14 +123,18 @@ export default async function CreditsPage({
     <div className="space-y-8">
       <PanelCard
         title={t('view.title')}
-        buttons={[
-          {
-            title: t('view.buttons.purchase'),
-            url: '/pricing',
-            target: '_blank',
-            icon: 'Coins',
-          },
-        ]}
+        buttons={
+          flowdeskFeatures.showScaffoldEntries
+            ? [
+                {
+                  title: t('view.buttons.purchase'),
+                  url: '/pricing',
+                  target: '_blank',
+                  icon: 'Coins',
+                },
+              ]
+            : []
+        }
         className="max-w-md"
       >
         <div className="text-primary text-3xl font-bold">

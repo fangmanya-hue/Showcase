@@ -71,7 +71,7 @@ export function SignIn({
     }
 
     if (!email || !password) {
-      toast.error('email and password are required');
+      toast.error(t('credentialsRequired'));
       return;
     }
 
@@ -118,13 +118,13 @@ export function SignIn({
               return;
             }
 
-            toast.error(e?.error?.message || 'sign in failed');
+            toast.error(e?.error?.message || t('signInFailed'));
             setLoading(false);
           },
         }
       );
     } catch (e: any) {
-      toast.error(e?.message || 'sign in failed');
+      toast.error(e?.message || t('signInFailed'));
       setLoading(false);
     }
   };

@@ -2,7 +2,9 @@ import { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 
 import { getThemeLayout } from '@/core/theme';
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { LocaleDetector, TopBanner } from '@/shared/blocks/common';
+import { FlowdeskShell } from '@/shared/flowdesk/shell';
 import {
   Footer as FooterType,
   Header as HeaderType,
@@ -13,6 +15,9 @@ export default async function LandingLayout({
 }: {
   children: ReactNode;
 }) {
+  if (!flowdeskFeatures.showScaffoldEntries)
+    return <FlowdeskShell>{children}</FlowdeskShell>;
+
   // load page data
   const t = await getTranslations('landing');
 

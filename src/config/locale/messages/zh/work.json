@@ -1,0 +1,47 @@
+{
+  "nav": {
+    "intake": "录入",
+    "review": "核对",
+    "list": "事项列表",
+    "detail": "事项详情",
+    "label": "工作台导航"
+  },
+  "demo": {
+    "note": "本地示例 · 数据仅保存在当前浏览器标签页。人员信息为脱敏示例，业务线采用公开组织口径。",
+    "loading": "正在读取本地示例…",
+    "storage": "浏览器存储不可用，刷新可能丢失修改。"
+  },
+  "field": {
+    "title": "事项标题",
+    "owner": "负责人",
+    "department": "协办部门",
+    "due": "截止时间",
+    "priority": "优先级",
+    "source": "来源",
+    "line": "业务线",
+    "status": "状态",
+    "empty": "未提取到",
+    "none": "尚未指定",
+    "choose": "请选择",
+    "employee": "工号 {id}",
+    "evidence": "原文依据",
+    "noEvidence": "这段原文没有提供该字段。",
+    "manual": "人工确认值",
+    "ai": "AI 提取值（示例）",
+    "rule": "规则计算值"
+  },
+  "action": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "undo": "撤回上次操作",
+    "close": "关闭事项",
+    "merge": "合并到此事项",
+    "save": "确认写入列表",
+    "inspect": "打开事项"
+  },
+  "status": {
+    "open": "进行中",
+    "overdue": "已逾期",
+    "closed": "已关闭"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "ShipAny 模板二",
-    "description": "ShipAny 是用于构建 AI SaaS 创业项目的 NextJS 脚手架。提供丰富模板和组件，助您快速上线产品。",
-    "keywords": "shipany, shipany-boilerplate, shipany-template-two-demo"
+    "title": "FlowDesk · 企业事项协同工作台",
+    "description": "将跨部门群聊整理成可核对、可追踪的事项，明确负责人和截止时间。",
+    "keywords": "事项协同,负责人,截止时间,FlowDesk"
   },
   "sign": {
     "sign_in_title": "登录",
@@ -42,7 +42,13 @@
     "verify_email_account_mismatch": "当前已登录 {current}，本页面等待 {expected} 的验证结果。",
     "resend_verification_countdown": "重新发送验证邮件（{seconds}秒）",
     "resend_verification_wait": "请等待 {seconds} 秒后再重新发送。",
-    "back_to_sign_in": "返回登录"
+    "back_to_sign_in": "返回登录",
+    "credentialsRequired": "请输入邮箱和密码。",
+    "registrationRequired": "请输入姓名、邮箱和密码。",
+    "emailRequired": "请输入邮箱。",
+    "verificationFailed": "验证邮件发送失败。",
+    "signInFailed": "登录失败。",
+    "signUpFailed": "注册失败。"
   },
   "payment": {
     "choose_payment_method": "选择支付方式",

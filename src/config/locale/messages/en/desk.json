@@ -1,0 +1,43 @@
+{
+  "brand": {
+    "name": "FlowDesk",
+    "position": "Action workspace"
+  },
+  "nav": {
+    "features": "Features",
+    "workflow": "Workflow",
+    "docs": "Guide",
+    "workspace": "Open workspace",
+    "sign": "Sign in",
+    "billing": "Billing",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "credit": "Built with ShipAny",
+    "language": "Change language",
+    "menu": "Navigation",
+    "contact": "Contact support",
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme"
+  },
+  "footer": {
+    "rights": "© {year} FlowDesk"
+  },
+  "error": {
+    "missing": "Page not found",
+    "home": "Back to home",
+    "denied": "Access denied"
+  },
+  "docs": {
+    "search": "Search the guide",
+    "toc": "On this page",
+    "tocNoHeadings": "No headings",
+    "searchNoResult": "No results",
+    "lastUpdate": "Last updated",
+    "chooseLanguage": "Choose a language",
+    "nextPage": "Next page",
+    "previousPage": "Previous page",
+    "chooseTheme": "Choose theme",
+    "editOnGithub": "Edit on GitHub"
+  }
+}

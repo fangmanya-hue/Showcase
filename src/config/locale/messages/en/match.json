@@ -1,0 +1,14 @@
+{
+  "status": {
+    "matched": "Unique match",
+    "ambiguous": "Multiple candidates",
+    "not_found": "No match"
+  },
+  "method": {
+    "employee": "Employee ID",
+    "full": "Full name",
+    "short": "Department shorthand",
+    "alias": "Alias directory",
+    "none": "Manual review"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "brand": {
+    "name": "FlowDesk",
+    "position": "企业事项协同工作台"
+  },
+  "nav": {
+    "features": "产品功能",
+    "workflow": "工作流",
+    "docs": "使用指南",
+    "workspace": "打开工作台",
+    "sign": "登录",
+    "billing": "账单",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "credit": "技术署名 · ShipAny",
+    "language": "切换语言",
+    "menu": "导航菜单",
+    "contact": "联系支持",
+    "light": "浅色外观",
+    "dark": "深色外观",
+    "system": "跟随系统"
+  },
+  "footer": {
+    "rights": "© {year} FlowDesk"
+  },
+  "error": {
+    "missing": "找不到这个页面",
+    "home": "返回首页",
+    "denied": "无访问权限"
+  },
+  "docs": {
+    "search": "搜索文档",
+    "toc": "本页目录",
+    "tocNoHeadings": "暂无标题",
+    "searchNoResult": "没有搜索结果",
+    "lastUpdate": "最后更新",
+    "chooseLanguage": "选择语言",
+    "nextPage": "下一页",
+    "previousPage": "上一页",
+    "chooseTheme": "选择外观",
+    "editOnGithub": "在 GitHub 编辑"
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Monitor, Moon, SunDim } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 
 import { AnimatedThemeToggler } from '@/shared/components/magicui/animated-theme-toggler';
@@ -18,6 +19,7 @@ export function ThemeToggler({
   type?: 'icon' | 'button' | 'toggle';
   className?: string;
 }) {
+  const t = useTranslations('desk.nav');
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -50,21 +52,21 @@ export function ThemeToggler({
         <ToggleGroupItem
           value="light"
           onClick={() => setTheme('light')}
-          aria-label="Switch to light mode"
+          aria-label={t('light')}
         >
           <SunDim />
         </ToggleGroupItem>
         <ToggleGroupItem
           value="dark"
           onClick={() => setTheme('dark')}
-          aria-label="Switch to dark mode"
+          aria-label={t('dark')}
         >
           <Moon />
         </ToggleGroupItem>
         <ToggleGroupItem
           value="system"
           onClick={() => setTheme('system')}
-          aria-label="Switch to system mode"
+          aria-label={t('system')}
         >
           <Monitor />
         </ToggleGroupItem>

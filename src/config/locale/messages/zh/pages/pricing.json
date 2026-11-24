@@ -4,12 +4,12 @@
     "description": "选择方案，立即开始"
   },
   "page": {
-    "title": "ShipAny 价格表",
+    "title": "价格",
     "sections": {
       "pricing": {
         "id": "pricing",
         "title": "价格",
-        "description": "获取 ShipAny 的全部功能，极速交付你的 AI SaaS 创业项目。",
+        "description": "",
         "groups": [
           {
             "name": "one-time",
@@ -45,15 +45,6 @@
             "currency": "USD",
             "price": "$99",
             "original_price": "$199",
-            "currencies": [
-              {
-                "currency": "CNY",
-                "amount": 69900,
-                "price": "¥699",
-                "original_price": "¥1399",
-                "payment_providers": ["stripe"]
-              }
-            ],
             "unit": "",
             "is_featured": false,
             "tip": "一次付费，畅享无限项目部署！",
@@ -88,15 +79,6 @@
             "currency": "USD",
             "price": "$199",
             "original_price": "$299",
-            "currencies": [
-              {
-                "currency": "CNY",
-                "amount": 139900,
-                "price": "¥1399",
-                "original_price": "¥1999",
-                "payment_providers": ["stripe"]
-              }
-            ],
             "unit": "",
             "is_featured": true,
             "tip": "一次付费，畅享无限项目部署！",
@@ -129,15 +111,6 @@
             "currency": "USD",
             "price": "$299",
             "original_price": "$399",
-            "currencies": [
-              {
-                "currency": "CNY",
-                "amount": 199900,
-                "price": "¥1999",
-                "original_price": "¥2799",
-                "payment_providers": ["stripe", "creem"]
-              }
-            ],
             "unit": "",
             "is_featured": false,
             "tip": "一次付费，畅享无限项目部署！",

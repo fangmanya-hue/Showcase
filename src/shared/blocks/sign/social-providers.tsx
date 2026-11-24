@@ -57,7 +57,7 @@ export function SocialProviders({
           setIsShowSignModal(false);
         },
         onError: (e: any) => {
-          toast.error(e?.error?.message || 'sign in failed');
+          toast.error(e?.error?.message || t('signInFailed'));
           setLoading(false);
         },
       }

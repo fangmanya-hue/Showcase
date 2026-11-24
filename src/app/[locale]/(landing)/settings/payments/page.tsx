@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { PaymentType } from '@/extensions/payment/types';
 import { Empty } from '@/shared/blocks/common';
 import { TableCard } from '@/shared/blocks/table';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   getOrders,
   getOrdersCount,
@@ -24,7 +25,7 @@ export default async function PaymentsPage({
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.payments');

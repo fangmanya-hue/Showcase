@@ -5,6 +5,7 @@ import {
   localeMessagesPaths,
   localeMessagesRootPath,
 } from '@/config/locale';
+import currencyOverrides from '@/config/locale/pricing-currencies.json';
 
 import { routing } from './config';
 
@@ -17,6 +18,27 @@ export async function loadMessages(
     const messages = await import(
       `@/config/locale/messages/${locale}/${path}.json`
     );
+    if (path === 'pages/pricing' && locale in currencyOverrides) {
+      const original = messages.default;
+      const pricing = original.page.sections.pricing;
+      const overrides: Record<string, unknown> =
+        currencyOverrides[locale as keyof typeof currencyOverrides];
+      const items = pricing.items.map((item: { product_id: string }) =>
+        overrides[item.product_id]
+          ? { ...item, currencies: overrides[item.product_id] }
+          : item
+      );
+      return {
+        ...original,
+        page: {
+          ...original.page,
+          sections: {
+            ...original.page.sections,
+            pricing: { ...pricing, items },
+          },
+        },
+      };
+    }
     return messages.default;
   } catch (e) {
     try {

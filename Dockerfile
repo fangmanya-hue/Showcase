@@ -8,6 +8,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml* source.config.ts next.config.mjs ./
+COPY src/config/flowdesk.ts ./src/config/flowdesk.ts
 RUN pnpm i --frozen-lockfile
 
 # Rebuild the source code only when needed

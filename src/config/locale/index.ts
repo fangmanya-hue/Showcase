@@ -16,12 +16,17 @@ export const localeDetection = false;
 export const localeMessagesRootPath = '@/config/locale/messages';
 
 export const localeMessagesPaths = [
+  'desk',
+  'home',
+  'work',
+  'intake',
+  'review',
+  'match',
+  'items',
+  'detail',
+  'account',
   'common',
   'landing',
-  'showcases',
-  'blog',
-  'updates',
-  'pricing',
   'settings/sidebar',
   'settings/profile',
   'settings/security',

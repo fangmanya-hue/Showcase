@@ -1,0 +1,13 @@
+{
+  "page": {
+    "title": "Action list",
+    "intro": "Track owners and due dates by business line. Open an action to inspect its evidence.",
+    "empty": "No actions match these filters."
+  },
+  "filter": {
+    "all": "All",
+    "from": "Due from",
+    "to": "Due through",
+    "reset": "Clear filters"
+  }
+}

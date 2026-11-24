@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "ShipAny Template Two",
-    "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups. Ship Fast with a variety of templates and components.",
-    "keywords": "shipany, shipany-boilerplate, shipany-template-two-demo"
+    "title": "FlowDesk · Cross-team action workspace",
+    "description": "Turn cross-team conversations into trackable actions. Verify the source, confirm owners and follow due dates.",
+    "keywords": "action tracking,owners,due dates,FlowDesk"
   },
   "sign": {
     "sign_in_title": "Sign In",
@@ -42,7 +42,13 @@
     "verify_email_account_mismatch": "Signed in as {current}. This page is waiting for {expected}.",
     "resend_verification_countdown": "Resend verification email ({seconds}s)",
     "resend_verification_wait": "Please wait {seconds}s before resending.",
-    "back_to_sign_in": "Back to Sign In"
+    "back_to_sign_in": "Back to Sign In",
+    "credentialsRequired": "Enter your email and password.",
+    "registrationRequired": "Enter your name, email and password.",
+    "emailRequired": "Enter your email.",
+    "verificationFailed": "Could not send the verification email.",
+    "signInFailed": "Could not sign in.",
+    "signUpFailed": "Could not create the account."
   },
   "payment": {
     "choose_payment_method": "Choose Payment Method",

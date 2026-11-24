@@ -1,0 +1,47 @@
+{
+  "nav": {
+    "intake": "Intake",
+    "review": "Review",
+    "list": "Actions",
+    "detail": "Details",
+    "label": "Workspace navigation"
+  },
+  "demo": {
+    "note": "Local demo · Changes stay in this browser tab. People are redacted; business lines follow public organization names.",
+    "loading": "Loading your local workspace…",
+    "storage": "Browser storage is unavailable. Refreshing may lose your changes."
+  },
+  "field": {
+    "title": "Action title",
+    "owner": "Owner",
+    "department": "Supporting department",
+    "due": "Due date",
+    "priority": "Priority",
+    "source": "Source",
+    "line": "Business line",
+    "status": "Status",
+    "empty": "Not extracted",
+    "none": "Unassigned",
+    "choose": "Choose…",
+    "employee": "ID {id}",
+    "evidence": "Source evidence",
+    "noEvidence": "This field has no supporting text.",
+    "manual": "Confirmed value",
+    "ai": "AI extraction (sample)",
+    "rule": "Rule result"
+  },
+  "action": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "undo": "Undo last change",
+    "close": "Close action",
+    "merge": "Merge into this action",
+    "save": "Confirm and add to list",
+    "inspect": "Open action"
+  },
+  "status": {
+    "open": "Open",
+    "overdue": "Overdue",
+    "closed": "Closed"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "status": {
+    "matched": "唯一命中",
+    "ambiguous": "多候选待确认",
+    "not_found": "未命中"
+  },
+  "method": {
+    "employee": "工号",
+    "full": "全名",
+    "short": "部门内简称",
+    "alias": "别名表",
+    "none": "人工核对"
+  }
+}

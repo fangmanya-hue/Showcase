@@ -1,0 +1,29 @@
+{
+  "message": {
+    "signIn": "请先登录。",
+    "denied": "没有访问权限。",
+    "missingKey": "找不到该 API 密钥。",
+    "billingLink": "无法获取账单链接。",
+    "invalidOrder": "订单编号无效。",
+    "invalidSubscription": "订阅编号无效。",
+    "invoiceLink": "无法获取发票链接。",
+    "missingOrder": "找不到该订单。",
+    "missingInvoice": "该订单暂无发票。",
+    "missingProvider": "找不到支付服务。",
+    "missingSubscription": "找不到该订阅。",
+    "missingSubscriptionId": "缺少支付服务的订阅编号。",
+    "missingCustomer": "缺少支付服务的客户编号。",
+    "cancelFailed": "取消订阅失败。",
+    "name": "请输入姓名。",
+    "password": "请输入密码。",
+    "inactive": "此订阅已结束。",
+    "title": "请输入名称。",
+    "billingFailed": "获取账单失败。",
+    "invoiceFailed": "获取发票失败。",
+    "keyCreated": "已创建 API 密钥。",
+    "keyDeleted": "已删除 API 密钥。",
+    "keyUpdated": "已更新 API 密钥。",
+    "profileUpdated": "已更新个人资料。",
+    "canceled": "已取消订阅。"
+  }
+}

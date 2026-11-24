@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { flowdeskFeatures } from '@/config/flowdesk';
+import { FlowdeskHome } from '@/shared/flowdesk/home';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
 export const revalidate = 3600;
@@ -12,6 +14,8 @@ export default async function LandingPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  if (!flowdeskFeatures.showScaffoldEntries) return <FlowdeskHome />;
 
   const t = await getTranslations('pages.index');
 

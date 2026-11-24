@@ -1,0 +1,29 @@
+{
+  "message": {
+    "signIn": "Sign in to continue.",
+    "denied": "Access denied.",
+    "missingKey": "API key not found.",
+    "billingLink": "The billing link is unavailable.",
+    "invalidOrder": "Invalid order number.",
+    "invalidSubscription": "Invalid subscription number.",
+    "invoiceLink": "The invoice link is unavailable.",
+    "missingOrder": "Order not found.",
+    "missingInvoice": "No invoice is available for this order.",
+    "missingProvider": "Payment provider unavailable.",
+    "missingSubscription": "Subscription not found.",
+    "missingSubscriptionId": "Missing provider subscription ID.",
+    "missingCustomer": "Missing provider customer ID.",
+    "cancelFailed": "Could not cancel the subscription.",
+    "name": "Enter your name.",
+    "password": "Enter your password.",
+    "inactive": "This subscription is inactive.",
+    "title": "Enter a title.",
+    "billingFailed": "Could not retrieve billing details.",
+    "invoiceFailed": "Could not retrieve the invoice.",
+    "keyCreated": "API key created.",
+    "keyDeleted": "API key deleted.",
+    "keyUpdated": "API key updated.",
+    "profileUpdated": "Profile updated.",
+    "canceled": "Subscription canceled."
+  }
+}

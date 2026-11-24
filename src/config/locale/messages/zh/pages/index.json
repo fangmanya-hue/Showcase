@@ -98,7 +98,8 @@
               "alt": "Vercel"
             }
           }
-        ]
+        ],
+        "id": "logos"
       },
       "introduce": {
         "block": "features-list",

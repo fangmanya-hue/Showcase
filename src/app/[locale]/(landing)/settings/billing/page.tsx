@@ -1,10 +1,12 @@
 import moment from 'moment';
 import { getTranslations } from 'next-intl/server';
 
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { Empty } from '@/shared/blocks/common';
 import { PanelCard } from '@/shared/blocks/panel';
 import { TableCard } from '@/shared/blocks/table';
 import { Button } from '@/shared/components/ui/button';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   getCurrentSubscription,
   getSubscriptions,
@@ -27,7 +29,7 @@ export default async function BillingPage({
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.billing');
@@ -233,7 +235,10 @@ export default async function BillingPage({
       <PanelCard
         label={currentSubscription?.status}
         title={t('view.title')}
-        buttons={buttons}
+        buttons={buttons.filter(
+          (button) =>
+            flowdeskFeatures.showScaffoldEntries || button.url !== '/pricing'
+        )}
         className="max-w-md"
       >
         <div className="text-primary text-3xl font-bold">

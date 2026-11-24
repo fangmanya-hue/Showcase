@@ -1,0 +1,134 @@
+FlowDesk 第 1 轮前端交付清单
+
+A  首页
+首页按 Hero、问题、工作流、功能、验证、收尾行动组织。角色痛点、真实验证口径和七项能力均有对应内容。四个工作台页面可直接进入。
+
+B  入口
+开关位于 src/config/flowdesk.ts。已分别验证开启时模板定价入口出现、关闭后 FlowDesk 首页恢复。页尾保留 ShipAny 许可署名。
+
+C  双语与四页交互
+默认中文。递归比对中英文资源目录、键路径、数组索引，43 对文件一致。TSX 中文标点全文检查只命中旧注释。新增页面与公共导航逐页检查，工作台复用了本地示例。
+在浏览器验证文字跨语言保留、筛选跨语言与刷新保留、原文高亮、多候选人工确认、模糊日期范围、合并与关闭二次确认、撤回与历史、移动宽度布局。
+
+D  站点信息
+品牌、站点标题、分享图、favicon、manifest、站点地图、包元信息、使用指南和演示版法律页面已对齐。
+中英文首页、四个工作台页面、指南和法律页均在生产构建中检查通过。此次页面访问未发出 /api/ 请求。
+
+交付验证
+pnpm check:flowdesk，TypeScript 检查，Next.js 生产构建和 Chromium 端到端回归通过。
+未改 API 路由、数据库定义或依赖版本。数据仅保存在当前标签页会话中。
+
+待业务方补充
+正式域名与支持邮箱。附录 A 尚缺，英文暂用 action 表示事项。16 条业务线使用示例编号，部门和人名均作为脱敏演示数据使用。
+
+文件清单（相对仓库根目录，M 为修改，D 为替换后移除，+ 为新增）
+M  .env.example
+M  Dockerfile
+M  README.md
+M  content/docs/index.mdx
+M  content/docs/index.zh.mdx
+M  content/pages/privacy-policy.mdx
+M  content/pages/privacy-policy.zh.mdx
+M  content/pages/terms-of-service.mdx
+M  content/pages/terms-of-service.zh.mdx
+M  package.json
+M  public/favicon.ico
+M  public/logo.png
++  public/preview-en.png
+M  public/preview.png
+D  public/sitemap.xml
++  scripts/check-flowdesk.ts
+M  source.config.ts
+M  src/app/[locale]/(admin)/admin/no-permission/page.tsx
+M  src/app/[locale]/(admin)/layout.tsx
+M  src/app/[locale]/(auth)/no-permission/page.tsx
+M  src/app/[locale]/(chat)/layout.tsx
+M  src/app/[locale]/(docs)/layout.tsx
+M  src/app/[locale]/(landing)/activity/layout.tsx
++  src/app/[locale]/(landing)/intake/page.tsx
++  src/app/[locale]/(landing)/items/[id]/page.tsx
++  src/app/[locale]/(landing)/items/page.tsx
+M  src/app/[locale]/(landing)/layout.tsx
+M  src/app/[locale]/(landing)/page.tsx
+M  src/app/[locale]/(landing)/pricing/page.tsx
++  src/app/[locale]/(landing)/review/page.tsx
+M  src/app/[locale]/(landing)/settings/apikeys/[id]/delete/page.tsx
+M  src/app/[locale]/(landing)/settings/apikeys/[id]/edit/page.tsx
+M  src/app/[locale]/(landing)/settings/apikeys/create/page.tsx
+M  src/app/[locale]/(landing)/settings/apikeys/page.tsx
+M  src/app/[locale]/(landing)/settings/billing/cancel/page.tsx
+M  src/app/[locale]/(landing)/settings/billing/page.tsx
+M  src/app/[locale]/(landing)/settings/billing/retrieve/page.tsx
+M  src/app/[locale]/(landing)/settings/credits/page.tsx
+M  src/app/[locale]/(landing)/settings/invoices/retrieve/page.tsx
+M  src/app/[locale]/(landing)/settings/layout.tsx
+M  src/app/[locale]/(landing)/settings/payments/page.tsx
+M  src/app/[locale]/(landing)/settings/profile/page.tsx
+M  src/app/[locale]/(landing)/settings/security/page.tsx
+M  src/app/[locale]/(landing)/showcases/page.tsx
+M  src/app/[locale]/layout.tsx
+M  src/app/layout.tsx
++  src/app/manifest.ts
+M  src/app/not-found.tsx
++  src/app/sitemap.ts
++  src/config/flowdesk.ts
+M  src/config/index.ts
+M  src/config/locale/index.ts
++  src/config/locale/messages/en/account.json
+M  src/config/locale/messages/en/admin/sidebar.json
+M  src/config/locale/messages/en/ai/chat.json
+M  src/config/locale/messages/en/common.json
++  src/config/locale/messages/en/desk.json
++  src/config/locale/messages/en/detail.json
++  src/config/locale/messages/en/home.json
++  src/config/locale/messages/en/intake.json
++  src/config/locale/messages/en/items.json
++  src/config/locale/messages/en/match.json
+M  src/config/locale/messages/en/pages/blog.json
+M  src/config/locale/messages/en/pages/pricing.json
+M  src/config/locale/messages/en/pages/showcases.json
++  src/config/locale/messages/en/review.json
++  src/config/locale/messages/en/work.json
++  src/config/locale/messages/zh/account.json
+M  src/config/locale/messages/zh/admin/sidebar.json
+M  src/config/locale/messages/zh/ai/chat.json
+M  src/config/locale/messages/zh/common.json
++  src/config/locale/messages/zh/desk.json
++  src/config/locale/messages/zh/detail.json
++  src/config/locale/messages/zh/home.json
++  src/config/locale/messages/zh/intake.json
++  src/config/locale/messages/zh/items.json
++  src/config/locale/messages/zh/match.json
+M  src/config/locale/messages/zh/pages/blog.json
+M  src/config/locale/messages/zh/pages/index.json
+M  src/config/locale/messages/zh/pages/pricing.json
+M  src/config/locale/messages/zh/pages/showcases.json
++  src/config/locale/messages/zh/review.json
++  src/config/locale/messages/zh/work.json
++  src/config/locale/pricing-currencies.json
++  src/core/docs/provider.tsx
+M  src/core/i18n/request.ts
+M  src/shared/blocks/common/locale-detector.tsx
+M  src/shared/blocks/common/theme-toggler.tsx
+M  src/shared/blocks/generator/image.tsx
+M  src/shared/blocks/generator/music.tsx
+M  src/shared/blocks/generator/video.tsx
+M  src/shared/blocks/sign/sign-in-form.tsx
+M  src/shared/blocks/sign/sign-in.tsx
+M  src/shared/blocks/sign/sign-up.tsx
+M  src/shared/blocks/sign/social-providers.tsx
+M  src/shared/blocks/sign/verify-email.tsx
++  src/shared/flowdesk/fields.tsx
++  src/shared/flowdesk/fixtures.ts
++  src/shared/flowdesk/flowdesk.css
++  src/shared/flowdesk/home.tsx
++  src/shared/flowdesk/model.ts
++  src/shared/flowdesk/preview.tsx
++  src/shared/flowdesk/shell.tsx
++  src/shared/flowdesk/switch.tsx
++  src/shared/flowdesk/workspace.tsx
++  src/shared/lib/account-message.ts
+M  src/shared/lib/seo.ts
+M  src/shared/services/settings.ts
+M  wrangler.toml.example
++  docs/flowdesk-round-1.txt

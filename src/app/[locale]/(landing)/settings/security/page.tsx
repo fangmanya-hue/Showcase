@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { PanelCard } from '@/shared/blocks/panel';
+import { accountMessage } from '@/shared/lib/account-message';
 import { getUserInfo, UpdateUser, updateUser } from '@/shared/models/user';
 import { Button as ButtonType } from '@/shared/types/blocks/common';
 import { Form as FormType } from '@/shared/types/blocks/form';
@@ -9,7 +10,7 @@ import { Form as FormType } from '@/shared/types/blocks/form';
 export default async function SecurityPage() {
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.security');
@@ -52,12 +53,12 @@ export default async function SecurityPage() {
 
         const { user } = passby;
         if (!user) {
-          throw new Error('no auth');
+          throw new Error(await accountMessage('signIn'));
         }
 
         const password = data.get('password') as string;
         if (!password?.trim()) {
-          throw new Error('password is required');
+          throw new Error(await accountMessage('password'));
         }
 
         const updatedUser: UpdateUser = {
@@ -70,7 +71,7 @@ export default async function SecurityPage() {
 
         return {
           status: 'success',
-          message: 'Profile updated',
+          message: await accountMessage('profileUpdated'),
           redirect_url: '/settings/profile',
         };
       },

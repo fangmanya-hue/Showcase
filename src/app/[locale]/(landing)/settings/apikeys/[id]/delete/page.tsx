@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { FormCard } from '@/shared/blocks/form';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   ApikeyStatus,
   findApikeyById,
@@ -20,16 +21,16 @@ export default async function DeleteApiKeyPage({
   const { id } = await params;
   const apikey = await findApikeyById(id);
   if (!apikey) {
-    return <Empty message="API Key not found" />;
+    return <Empty message={await accountMessage('missingKey')} />;
   }
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   if (apikey.userId !== user.id) {
-    return <Empty message="no permission" />;
+    return <Empty message={await accountMessage('denied')} />;
   }
 
   const t = await getTranslations('settings.apikeys');
@@ -70,20 +71,20 @@ export default async function DeleteApiKeyPage({
         const { user, apikey } = passby;
 
         if (!apikey) {
-          throw new Error('apikey not found');
+          throw new Error(await accountMessage('missingKey'));
         }
 
         if (!user) {
-          throw new Error('no auth');
+          throw new Error(await accountMessage('signIn'));
         }
 
         if (apikey.userId !== user.id) {
-          throw new Error('no permission');
+          throw new Error(await accountMessage('denied'));
         }
 
         const title = data.get('title') as string;
         if (!title?.trim()) {
-          throw new Error('title is required');
+          throw new Error(await accountMessage('title'));
         }
 
         const updatedApikey: UpdateApikey = {
@@ -95,7 +96,7 @@ export default async function DeleteApiKeyPage({
 
         return {
           status: 'success',
-          message: 'API Key deleted',
+          message: await accountMessage('keyDeleted'),
           redirect_url: '/settings/apikeys',
         };
       },

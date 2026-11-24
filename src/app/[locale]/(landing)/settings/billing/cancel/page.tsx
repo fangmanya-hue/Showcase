@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { FormCard } from '@/shared/blocks/form';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   findSubscriptionBySubscriptionNo,
   SubscriptionStatus,
@@ -25,25 +26,25 @@ export default async function CancelBillingPage({
   const { subscription_no } = await searchParams;
 
   if (!subscription_no) {
-    return <Empty message="invalid subscription no" />;
+    return <Empty message={await accountMessage('invalidSubscription')} />;
   }
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth, please sign in" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const subscription = await findSubscriptionBySubscriptionNo(subscription_no);
   if (!subscription) {
-    return <Empty message="subscription not found" />;
+    return <Empty message={await accountMessage('missingSubscription')} />;
   }
 
   if (!subscription.paymentProvider || !subscription.subscriptionId) {
-    return <Empty message="subscription with no payment subscription id" />;
+    return <Empty message={await accountMessage('missingSubscriptionId')} />;
   }
 
   if (subscription.userId !== user.id) {
-    return <Empty message="no permission" />;
+    return <Empty message={await accountMessage('denied')} />;
   }
 
   const paymentService = await getPaymentService();
@@ -51,7 +52,7 @@ export default async function CancelBillingPage({
     subscription.paymentProvider
   );
   if (!paymentProvider) {
-    return <Empty message="payment provider not found" />;
+    return <Empty message={await accountMessage('missingProvider')} />;
   }
 
   const crumb: Crumb[] = [
@@ -74,22 +75,22 @@ export default async function CancelBillingPage({
 
     const { subscription, user } = passby;
     if (!user) {
-      throw new Error('no auth');
+      throw new Error(await accountMessage('signIn'));
     }
 
     if (!subscription || !subscription.subscriptionId) {
-      throw new Error('invalid subscription');
+      throw new Error(await accountMessage('invalidSubscription'));
     }
 
     if (subscription.userId !== user.id) {
-      throw new Error('no permission');
+      throw new Error(await accountMessage('denied'));
     }
 
     if (
       subscription.status !== SubscriptionStatus.ACTIVE &&
       subscription.status !== SubscriptionStatus.TRIALING
     ) {
-      throw new Error('subscription is not active or trialing');
+      throw new Error(await accountMessage('inactive'));
     }
 
     const paymentService = await getPaymentService();
@@ -101,7 +102,7 @@ export default async function CancelBillingPage({
       subscriptionId: subscription.subscriptionId,
     });
     if (!result) {
-      throw new Error('cancel subscription failed');
+      throw new Error(await accountMessage('cancelFailed'));
     }
 
     await updateSubscriptionBySubscriptionNo(subscription.subscriptionNo, {
@@ -110,7 +111,7 @@ export default async function CancelBillingPage({
 
     return {
       status: 'success' as const,
-      message: 'Subscription canceled',
+      message: await accountMessage('canceled'),
       redirect_url: '/settings/billing',
     };
   };

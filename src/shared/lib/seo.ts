@@ -60,7 +60,11 @@ export function getMetadata(
       defaultMetadata.description;
 
     // image url
-    let imageUrl = options.imageUrl || envConfigs.app_preview_image;
+    let imageUrl =
+      options.imageUrl ||
+      (locale === 'en' && envConfigs.app_preview_image === '/preview.png'
+        ? '/preview-en.png'
+        : envConfigs.app_preview_image);
     if (imageUrl.startsWith('http')) {
       imageUrl = imageUrl;
     } else {
@@ -105,7 +109,6 @@ export function getMetadata(
         title,
         description,
         images: [imageUrl.toString()],
-        site: envConfigs.app_url,
       },
 
       robots: {

@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Action details",
+    "missing": "Action not found.",
+    "sources": "Linked messages",
+    "history": "Change history",
+    "fields": "Fields and evidence",
+    "context": "Request context",
+    "merged": "Merging keeps the target fields and attaches the source messages and a history entry.",
+    "closed": "Confirm to mark this action as closed.",
+    "undo": "The last change was undone."
+  },
+  "log": {
+    "sample": "Loaded sample action",
+    "created": "Confirmed and saved the draft",
+    "merged": "Confirmed merge and linked source messages",
+    "closed": "Confirmed closure",
+    "undone": "Undid the change and restored the previous state"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "eyebrow": "AI action workspace for enterprises",
+    "lead": "Turn chat agreements",
+    "title": "into actions your team can track.",
+    "sub": "Use the request context to interpret conversations, extract owners and dates, preserve source evidence, and send uncertain details to a human for review.",
+    "start": "Create actions",
+    "workflow": "See how it works"
+  },
+  "visual": {
+    "label": "Action understanding engine",
+    "ready": "Waiting for input",
+    "requirement": "Request context",
+    "conversation": "Team conversation",
+    "interpretation": "Interpret commitments",
+    "draft": "Structured action draft",
+    "owner": "Owner",
+    "due": "Due date",
+    "evidence": "Source evidence",
+    "status": "Tracking status"
+  },
+  "principles": {
+    "evidence": "Evidence for every field",
+    "evidenceText": "Review the exact source sentence",
+    "missing": "No invented answers",
+    "missingText": "Gaps and ambiguity stay visible",
+    "confirm": "People confirm key changes",
+    "confirmText": "Every write, merge and closure is traceable"
+  },
+  "problem": {
+    "label": "From conversation to execution",
+    "title": "An agreement should not disappear under the next message.",
+    "body": "Cross-team work often starts with a sentence in chat. Owners, dates and next steps remain scattered across the thread. FlowDesk turns those conversations into actions that teams can review, assign and follow through."
+  },
+  "workflow": {
+    "label": "End-to-end workflow",
+    "title": "Move from a request to an executable action",
+    "intake": "Add context and source",
+    "intakeText": "Describe the problem, then paste the original conversation.",
+    "review": "Review the interpretation",
+    "reviewText": "Check owners, dates, evidence and open questions.",
+    "list": "Track progress",
+    "listText": "Filter by business line, owner, due date and status.",
+    "detail": "Trace every change",
+    "detailText": "Review the request, source messages, confirmations and history."
+  },
+  "features": {
+    "label": "Capabilities",
+    "title": "AI interprets. People make the final call.",
+    "intro": "The system turns unstructured conversations into action drafts while keeping enough context for reviewers to understand every result.",
+    "context": "Interpret request context",
+    "contextText": "Understand the outcome first, then identify commitments and next steps in the conversation.",
+    "extract": "Create structured actions",
+    "extractText": "Extract a title, owner, supporting team, due date, priority and source.",
+    "evidence": "Inspect source evidence",
+    "evidenceText": "Trace every field to its sentence. Leave unsupported fields empty.",
+    "match": "Resolve names and teams",
+    "matchText": "Match shorthand names to the directory and present candidates when a name is ambiguous.",
+    "rules": "Validate dates and status",
+    "rulesText": "Use deterministic rules for normalized dates and overdue status instead of treating guesses as facts.",
+    "track": "Keep a complete history",
+    "trackText": "Record every write, merge, closure and undo operation."
+  },
+  "trust": {
+    "label": "Explainable AI collaboration",
+    "title": "The system drafts the work. It does not decide for the team.",
+    "body": "When an owner is missing, a date is only a range, or a shorthand name matches several people, FlowDesk keeps the question in review. Tracking starts only after a coordinator confirms it."
+  },
+  "cta": {
+    "title": "Start with a real conversation.",
+    "text": "Add the request context and team chat to see FlowDesk create the first action draft.",
+    "button": "Open the action workspace"
+  }
+}

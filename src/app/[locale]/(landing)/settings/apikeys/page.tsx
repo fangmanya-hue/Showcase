@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { TableCard } from '@/shared/blocks/table';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   Apikey,
   ApikeyStatus,
@@ -23,7 +24,7 @@ export default async function ApiKeysPage({
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.apikeys');

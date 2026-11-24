@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { Empty } from '@/shared/blocks/common';
+import { accountMessage } from '@/shared/lib/account-message';
 import {
   findOrderByOrderNo,
   Order,
@@ -20,31 +21,31 @@ export default async function RetrieveInvoicePage({
   const { order_no } = await searchParams;
 
   if (!order_no) {
-    return <Empty message="invalid order no" />;
+    return <Empty message={await accountMessage('invalidOrder')} />;
   }
 
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth, please sign in" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const order = await findOrderByOrderNo(order_no);
   if (!order) {
-    return <Empty message="order not found" />;
+    return <Empty message={await accountMessage('missingOrder')} />;
   }
 
   if (!order.paymentProvider || !order.invoiceId) {
-    return <Empty message="order with no invoice" />;
+    return <Empty message={await accountMessage('missingInvoice')} />;
   }
 
   if (order.userId !== user.id) {
-    return <Empty message="no permission" />;
+    return <Empty message={await accountMessage('denied')} />;
   }
 
   const paymentService = await getPaymentService();
   const paymentProvider = paymentService.getProvider(order.paymentProvider);
   if (!paymentProvider) {
-    return <Empty message="payment provider not found" />;
+    return <Empty message={await accountMessage('missingProvider')} />;
   }
 
   let invoiceUrl = '';
@@ -54,7 +55,7 @@ export default async function RetrieveInvoicePage({
       invoiceId: order.invoiceId,
     });
     if (!invoice?.invoiceUrl) {
-      return <Empty message="invoice url not found" />;
+      return <Empty message={await accountMessage('invoiceLink')} />;
     }
 
     invoiceUrl = invoice.invoiceUrl;
@@ -63,11 +64,15 @@ export default async function RetrieveInvoicePage({
       invoiceUrl: invoiceUrl,
     });
   } catch (error: any) {
-    return <Empty message={error.message || 'get invoice failed'} />;
+    return (
+      <Empty
+        message={error.message || (await accountMessage('invoiceFailed'))}
+      />
+    );
   }
 
   if (!invoiceUrl) {
-    return <Empty message="invoice url not found" />;
+    return <Empty message={await accountMessage('invoiceLink')} />;
   }
 
   redirect(invoiceUrl);

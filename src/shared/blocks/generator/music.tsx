@@ -16,6 +16,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { AISong, AITaskStatus } from '@/extensions/ai/types';
 import { LazyImage } from '@/shared/blocks/common/lazy-image';
 import { Badge } from '@/shared/components/ui/badge';
@@ -621,12 +622,14 @@ export function MusicGenerator({ className, srOnlyTitle }: SongGeneratorProps) {
                         credits: user?.credits?.remainingCredits || 0,
                       })}
                     </span>
-                    <Link href="/pricing">
-                      <Button className="w-full" size="lg" variant="outline">
-                        <CreditCard className="size-4" />{' '}
-                        {t('generator.buy_credits')}
-                      </Button>
-                    </Link>
+                    {flowdeskFeatures.showScaffoldEntries && (
+                      <Link href="/pricing">
+                        <Button className="w-full" size="lg" variant="outline">
+                          <CreditCard className="size-4" />{' '}
+                          {t('generator.buy_credits')}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 )}
 

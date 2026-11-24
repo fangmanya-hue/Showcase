@@ -223,7 +223,7 @@ export function VerifyEmailPage({
 
   const handleResend = async () => {
     if (!email) {
-      toast.error('email is required');
+      toast.error(t('emailRequired'));
       return;
     }
     if (loading) return;
@@ -242,13 +242,13 @@ export function VerifyEmailPage({
         callbackURL: `${base}${nextUrl || '/'}`,
       });
       if (result?.error) {
-        toast.error(result.error.message || 'send verification email failed');
+        toast.error(result.error.message || t('verificationFailed'));
         return;
       }
       markSentNow(email);
       setCooldownSeconds(getCooldownRemainingSeconds(email));
     } catch (e: any) {
-      toast.error(e?.message || 'send verification email failed');
+      toast.error(e?.message || t('verificationFailed'));
     } finally {
       setLoading(false);
     }

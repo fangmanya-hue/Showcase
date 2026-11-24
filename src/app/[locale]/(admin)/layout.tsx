@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { requireAdminAccess } from '@/core/rbac/permission';
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { LocaleDetector } from '@/shared/blocks/common';
 import { DashboardLayout } from '@/shared/blocks/dashboard/layout';
 import { getAllConfigs } from '@/shared/models/config';
@@ -28,7 +29,17 @@ export default async function AdminLayout({
 
   const t = await getTranslations('admin');
 
-  const sidebar: SidebarType = t.raw('sidebar');
+  const sidebar: SidebarType = { ...t.raw('sidebar') };
+
+  if (!flowdeskFeatures.showScaffoldEntries && sidebar.footer?.nav) {
+    sidebar.footer = {
+      ...sidebar.footer,
+      nav: {
+        ...sidebar.footer.nav,
+        items: sidebar.footer.nav.items.filter((item) => item.url === '/'),
+      },
+    };
+  }
 
   const configs = await getAllConfigs();
   if (configs.app_name) {

@@ -1,4 +1,5 @@
 import packageJson from '../../package.json';
+import zhCommon from './locale/messages/zh/common.json';
 
 // Note: Environment variables are loaded via dotenv-cli in package.json scripts.
 // Next.js automatically loads .env files in the runtime, so no manual loading is needed here.
@@ -7,15 +8,17 @@ export type ConfigMap = Record<string, string>;
 
 export const envConfigs: ConfigMap = {
   app_url: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
-  app_name: process.env.NEXT_PUBLIC_APP_NAME ?? 'ShipAny App',
-  app_description: process.env.NEXT_PUBLIC_APP_DESCRIPTION ?? '',
+  app_name: process.env.NEXT_PUBLIC_APP_NAME ?? 'FlowDesk',
+  app_description:
+    process.env.NEXT_PUBLIC_APP_DESCRIPTION ?? zhCommon.metadata.description,
   app_logo: process.env.NEXT_PUBLIC_APP_LOGO ?? '/logo.png',
+  support_email: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? '',
   app_favicon: process.env.NEXT_PUBLIC_APP_FAVICON ?? '/favicon.ico',
   app_preview_image:
     process.env.NEXT_PUBLIC_APP_PREVIEW_IMAGE ?? '/preview.png',
   theme: process.env.NEXT_PUBLIC_THEME ?? 'default',
   appearance: process.env.NEXT_PUBLIC_APPEARANCE ?? 'system',
-  locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? 'en',
+  locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? 'zh',
   database_url: process.env.DATABASE_URL ?? '',
   database_auth_token: process.env.DATABASE_AUTH_TOKEN ?? '',
   database_provider: process.env.DATABASE_PROVIDER ?? 'postgresql',

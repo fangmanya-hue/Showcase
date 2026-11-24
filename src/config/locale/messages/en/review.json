@@ -1,0 +1,28 @@
+{
+  "page": {
+    "title": "Review action drafts",
+    "intro": "Expand fields to inspect the source. Resolve highlighted issues before saving.",
+    "context": "Request context",
+    "pending": "{count} drafts need attention",
+    "ready": "Ready to confirm",
+    "empty": "You have reviewed this batch.",
+    "saved": "Action added to the list.",
+    "merged": "Merged. Open the target action to inspect or undo the change."
+  },
+  "issue": {
+    "title": "The title is missing. Add one after checking the source.",
+    "missing": "No owner was named. Choose one after checking the source.",
+    "ambiguous": "This shorthand matches several people. Choose the correct owner.",
+    "unknown": "No directory match. Select an owner manually.",
+    "vague": "The wording gives a range. Confirm a specific due date.",
+    "date": "No valid due date was found. Supply a date.",
+    "conflict": "The source gives conflicting values. Confirm the correct one.",
+    "duplicate": "The owner, title and due date match an existing action."
+  },
+  "choice": {
+    "separate": "Keep as a separate action",
+    "target": "Merge target",
+    "ruleRange": "Date range: {start} to {end}",
+    "noDate": "No date resolved"
+  }
+}

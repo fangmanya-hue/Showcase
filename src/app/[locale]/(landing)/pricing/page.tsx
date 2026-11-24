@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { flowdeskFeatures } from '@/config/flowdesk';
 import { getMetadata } from '@/shared/lib/seo';
 import { getCurrentSubscription } from '@/shared/models/subscription';
 import { getUserInfo } from '@/shared/models/user';
@@ -41,6 +42,12 @@ export default async function PricingPage({
     sections: {
       pricing: {
         ...t.raw('page.sections.pricing'),
+        items: flowdeskFeatures.showScaffoldEntries
+          ? t.raw('page.sections.pricing.items')
+          : [],
+        groups: flowdeskFeatures.showScaffoldEntries
+          ? t.raw('page.sections.pricing.groups')
+          : [],
         data: {
           currentSubscription,
         },

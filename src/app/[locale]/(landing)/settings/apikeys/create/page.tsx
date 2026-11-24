@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { FormCard } from '@/shared/blocks/form';
+import { accountMessage } from '@/shared/lib/account-message';
 import { getNonceStr, getUuid } from '@/shared/lib/hash';
 import { ApikeyStatus, createApikey, NewApikey } from '@/shared/models/apikey';
 import { getUserInfo } from '@/shared/models/user';
@@ -11,7 +12,7 @@ import { Form as FormType } from '@/shared/types/blocks/form';
 export default async function CreateApiKeyPage() {
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.apikeys');
@@ -36,12 +37,12 @@ export default async function CreateApiKeyPage() {
 
         const { user } = passby;
         if (!user) {
-          throw new Error('no auth');
+          throw new Error(await accountMessage('signIn'));
         }
 
         const title = data.get('title') as string;
         if (!title?.trim()) {
-          throw new Error('title is required');
+          throw new Error(await accountMessage('title'));
         }
 
         const key = `sk-${getNonceStr(32)}`;
@@ -58,7 +59,7 @@ export default async function CreateApiKeyPage() {
 
         return {
           status: 'success',
-          message: 'API Key created',
+          message: await accountMessage('keyCreated'),
           redirect_url: '/settings/apikeys',
         };
       },

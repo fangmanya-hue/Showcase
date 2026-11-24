@@ -4,12 +4,12 @@
     "description": "Start with a plan"
   },
   "page": {
-    "title": "ShipAny Pricing",
+    "title": "Pricing",
     "sections": {
       "pricing": {
         "id": "pricing",
         "title": "Pricing",
-        "description": "Get all features of ShipAny, Ship your AI SaaS startups fast.",
+        "description": "",
         "groups": [
           {
             "name": "one-time",

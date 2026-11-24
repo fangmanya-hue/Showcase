@@ -2,13 +2,14 @@ import { getTranslations } from 'next-intl/server';
 
 import { Empty } from '@/shared/blocks/common';
 import { FormCard } from '@/shared/blocks/form';
+import { accountMessage } from '@/shared/lib/account-message';
 import { getUserInfo, UpdateUser, updateUser } from '@/shared/models/user';
 import { Form as FormType } from '@/shared/types/blocks/form';
 
 export default async function ProfilePage() {
   const user = await getUserInfo();
   if (!user) {
-    return <Empty message="no auth" />;
+    return <Empty message={await accountMessage('signIn')} />;
   }
 
   const t = await getTranslations('settings.profile');
@@ -41,12 +42,12 @@ export default async function ProfilePage() {
 
         const { user } = passby;
         if (!user) {
-          throw new Error('no auth');
+          throw new Error(await accountMessage('signIn'));
         }
 
         const name = data.get('name') as string;
         if (!name?.trim()) {
-          throw new Error('name is required');
+          throw new Error(await accountMessage('name'));
         }
 
         const image = data.get('image');
@@ -61,7 +62,7 @@ export default async function ProfilePage() {
 
         return {
           status: 'success',
-          message: 'Profile updated',
+          message: await accountMessage('profileUpdated'),
           redirect_url: '/settings/profile',
         };
       },

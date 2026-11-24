@@ -1,0 +1,20 @@
+{
+  "form": {
+    "title": "Create action drafts",
+    "intro": "Describe the outcome you need, then paste the original team conversation. Separate actions with a blank line.",
+    "context": "Request context",
+    "contextPlaceholder": "For example: identify work that needs follow-up and clarify owners, dates and next steps.",
+    "message": "Team conversation",
+    "messagePlaceholder": "Paste the original messages about work, ownership and timing.",
+    "reference": "Message date",
+    "reset": "Load sample text",
+    "submit": "Generate drafts and review",
+    "hint": "The system interprets the source with the request context. Review any field without clear evidence.",
+    "replace": "Generating again replaces the current draft batch. Saved actions stay in the list.",
+    "addLine": "Add a business line",
+    "lineName": "Business line label",
+    "saveLine": "Add line",
+    "lineExists": "This business line already exists.",
+    "lineAdded": "Added business line: {name}"
+  }
+}
