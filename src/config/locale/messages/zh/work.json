@@ -14,6 +14,8 @@
   "field": {
     "title": "事项标题",
     "owner": "负责人",
+    "contact": "联系对象",
+    "participant": "参与人",
     "department": "协办部门",
     "due": "截止时间",
     "priority": "优先级",
@@ -28,7 +30,12 @@
     "noEvidence": "这段原文没有提供该字段。",
     "manual": "人工确认值",
     "ai": "AI 提取值（示例）",
-    "rule": "规则计算值"
+    "rule": "规则计算值",
+    "userAction": "用户确认操作",
+    "pendingConfirm": "待当前操作者确认",
+    "ownerRole": "负责推进与闭环",
+    "participantRole": "参与沟通，不等同于负责人",
+    "personMatch": "匹配到 {name}（{dept} · 工号 {id}）"
   },
   "action": {
     "cancel": "取消",

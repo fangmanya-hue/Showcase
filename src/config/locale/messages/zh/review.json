@@ -7,7 +7,15 @@
     "ready": "可确认写入",
     "empty": "本批草稿已处理完毕。",
     "saved": "已写入事项列表。",
-    "merged": "已合并，可在目标事项详情中撤回。"
+    "merged": "已合并，可在目标事项详情中撤回。",
+    "checks": "本批检测结果",
+    "total": "草稿",
+    "pendingLabel": "待处理",
+    "readyLabel": "可写入",
+    "sourcePanel": "关联原文",
+    "sourceHelp": "点击右侧字段查看对应句子",
+    "draftPanel": "事项草稿",
+    "clickField": "字段与原文联动"
   },
   "issue": {
     "title": "缺事项标题。请对照原文填写。",

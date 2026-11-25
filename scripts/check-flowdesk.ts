@@ -5,7 +5,6 @@ import { join } from 'node:path';
 import {
   businessLines,
   examples,
-  sampleRequirement,
   sampleText,
   sourceDate,
 } from '../src/shared/flowdesk/fixtures';
@@ -18,6 +17,7 @@ import {
   matchOwner,
   normalizeDate,
   sourceFragments,
+  splitSourceBlocks,
   status,
   undoAction,
   writeDraft,
@@ -97,19 +97,32 @@ assert.equal(normalizeDate('下周天', sourceDate).date, '2026-12-06');
 assert.equal(normalizeDate('2026-02-30', sourceDate).date, '');
 assert.equal(normalizeDate('明天', sourceDate).date, '2026-11-24');
 assert.equal(sourceFragments(sampleText).join(''), sampleText);
+assert.equal(
+  splitSourceBlocks(`1、${examples[0]} 2、${examples[1]}`).length,
+  2
+);
 const state = initialWorkspace(),
   [compute, hr] = state.drafts;
 assert.deepEqual(state.customLines, []);
-assert.equal(state.context, sampleRequirement);
-assert.equal(compute.context, sampleRequirement);
+assert.equal(state.context, '');
+assert.equal(compute.context, '');
 assert.deepEqual(
   [compute, hr].map((draft) => issues(draft, state.items)),
-  [['vague'], ['missing', 'date']]
+  [
+    ['missing', 'vague'],
+    ['missing', 'date'],
+  ]
 );
 assert.equal(compute.line, '计算');
-assert.equal(compute.values.title.value, '与计算义总沟通立项');
-assert.equal(compute.values.owner.value, '义总秘书');
-assert.equal(compute.match.status, 'matched');
+assert.equal(compute.values.title.value, '联系义总秘书，预约立项沟通时间');
+assert.equal(compute.values.owner.value, '');
+assert.equal(compute.match.status, 'not_found');
+assert.equal(compute.mentions.contact.value, '义总秘书');
+assert.equal(compute.contactMatch.status, 'matched');
+assert.deepEqual(
+  compute.mentions.participants.map((item) => item.value),
+  ['计算义总']
+);
 assert.equal(compute.values.due.value, '这周');
 assert.equal(hr.line, 'HR');
 assert.equal(hr.values.title.value, '预定各个地域的会议室');
@@ -119,10 +132,14 @@ const saved = writeDraft(state, {
   edits: { owner: '0416', due: '2026-11-27' },
 });
 assert.equal(saved.items[0].edits.owner, '0416');
-const duplicate = { ...compute, edits: { due: '2026-11-29' } };
+const duplicate = {
+  ...compute,
+  edits: { owner: '0001', due: '2026-11-29' },
+};
 assert.deepEqual(issues(duplicate, state.items), ['duplicate']);
 const merged = changeAction(state, 'sample', 'merged', duplicate);
 assert.equal(merged.items[0].history.at(-1)?.kind, 'merged');
+assert.equal(merged.items[0].history.at(-1)?.source, 'user');
 assert.equal(merged.drafts.length, state.drafts.length - 1);
 const restored = undoAction(merged, 'sample');
 assert.equal(restored.items[0].sources.length, 1);

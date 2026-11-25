@@ -28,6 +28,13 @@ export const lines = businessLines.map((line) => line.short);
 // matching rules and do not represent real Huawei employees.
 export const people = [
   {
+    id: '0001',
+    name: '当前操作者',
+    dept: '计算',
+    short: [],
+    aliases: [],
+  },
+  {
     id: '0231',
     name: '秘书A',
     dept: '计算',
@@ -60,8 +67,8 @@ export const examples = [
 export const sampleText = examples.join('\n\n');
 
 export const showcase = {
-  title: '与计算义总沟通立项',
-  name: '秘书A',
+  title: '联系义总秘书，预约立项沟通时间',
+  name: '待当前操作者确认',
   date: '2026-11-23 – 2026-11-29',
   message: examples[0],
   evidence: '跟义总秘书约下时间',

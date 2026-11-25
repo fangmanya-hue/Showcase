@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { flowdeskPaths as paths } from '@/config/flowdesk';
 
-import { EvidenceFields } from './fields';
+import { EvidenceFields, SourceEvidence, type EvidenceTarget } from './fields';
 import {
   businessLines,
   people,
@@ -33,7 +33,7 @@ import {
   type Workspace,
 } from './model';
 
-const storageKey = 'flowdesk.workspace.v4';
+const storageKey = 'flowdesk.workspace.v5';
 type View = keyof typeof paths;
 type Change = (state: Workspace) => void;
 function useLocalWorkspace() {
@@ -80,18 +80,19 @@ export function DeskPage({ view, id }: { view: View; id?: string }) {
           </Link>
         ))}
       </nav>
-      <p className="fd-kicker">{t('desk.brand.position')}</p>
-      <h1>
-        {t(
-          {
-            intake: 'intake.form.title',
-            review: 'review.page.title',
-            list: 'items.page.title',
-            detail: 'detail.page.title',
-          }[view]
-        )}
-      </h1>
-      <small>{t('work.demo.note')}</small>
+      <header className="fd-work-heading">
+        <h1>
+          {t(
+            {
+              intake: 'intake.form.title',
+              review: 'review.page.title',
+              list: 'items.page.title',
+              detail: 'detail.page.title',
+            }[view]
+          )}
+        </h1>
+        <small>{t('work.demo.note')}</small>
+      </header>
       {warning && <p role="status">{t('work.demo.storage')}</p>}
       {!state ? (
         <p>{t('work.demo.loading')}</p>
@@ -136,7 +137,7 @@ function Intake({ state, change }: Props) {
   }
   return (
     <form
-      className="fd-card"
+      className="fd-card fd-intake-form"
       onSubmit={(e) => {
         e.preventDefault();
         if (!state.input.trim()) return;
@@ -152,120 +153,124 @@ function Intake({ state, change }: Props) {
         router.push(paths.review);
       }}
     >
-      <p>{t('intake.form.intro')}</p>
-      <label>
-        {t('intake.form.context')}
-        <textarea
-          required
-          rows={3}
-          placeholder={t('intake.form.contextPlaceholder')}
-          value={state.context}
-          onChange={(event) =>
-            change({ ...state, context: event.target.value })
-          }
-        />
-      </label>
-      <div className="fd-fields">
-        <div className="fd-line-picker">
-          <label>
-            {t('work.field.line')}
-            <select
-              value={state.line}
-              onChange={(e) => change({ ...state, line: e.target.value })}
-            >
-              {businessLines.map((line) => (
-                <option key={line.short} value={line.short}>
-                  {line.short} · {line.name}
-                </option>
-              ))}
-              {customLines.map((line) => (
-                <option key={line} value={line}>
-                  {line}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button
-            type="button"
-            className="fd-link"
-            onClick={() => {
-              setAddingLine((open) => !open);
-              setLineNotice('');
-            }}
-          >
-            {t('intake.form.addLine')}
-          </button>
-        </div>
-        <label>
-          {t('intake.form.reference')}
-          <input
-            required
-            type="date"
-            value={state.reference}
-            onChange={(e) => change({ ...state, reference: e.target.value })}
-          />
-        </label>
+      <div className="fd-intake-lead">
+        <p>{t('intake.form.intro')}</p>
+        <span>{t('intake.form.defaultGoal')}</span>
       </div>
-      {addingLine && (
-        <div className="fd-line-add">
-          <label>
-            {t('intake.form.lineName')}
-            <input
-              autoFocus
-              value={newLine}
-              onChange={(event) => {
-                setNewLine(event.target.value);
-                setLineNotice('');
-              }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  addLine();
-                }
-              }}
-            />
-          </label>
-          <div className="fd-actions">
-            <button
-              type="button"
-              className="fd-btn fd-small"
-              disabled={!newLine.trim()}
-              onClick={addLine}
-            >
-              {t('intake.form.saveLine')}
-            </button>
-            <button
-              type="button"
-              className="fd-link"
-              onClick={() => {
-                setAddingLine(false);
-                setNewLine('');
-                setLineNotice('');
-              }}
-            >
-              {t('work.action.cancel')}
-            </button>
-          </div>
-        </div>
-      )}
-      {lineNotice && <p role="status">{lineNotice}</p>}
       <label>
         {t('intake.form.message')}
         <textarea
           required
-          rows={10}
+          rows={14}
           placeholder={t('intake.form.messagePlaceholder')}
           value={state.input}
-          onChange={(e) => change({ ...state, input: e.target.value })}
+          onChange={(event) => change({ ...state, input: event.target.value })}
         />
       </label>
       <small>{t('intake.form.hint')}</small>
       {state.drafts.length > 0 && <p>{t('intake.form.replace')}</p>}
+
+      <details className="fd-options">
+        <summary>{t('intake.form.options')}</summary>
+        <label>
+          {t('intake.form.context')}
+          <textarea
+            rows={3}
+            placeholder={t('intake.form.contextPlaceholder')}
+            value={state.context}
+            onChange={(event) =>
+              change({ ...state, context: event.target.value })
+            }
+          />
+        </label>
+        <div className="fd-fields">
+          <div className="fd-line-picker">
+            <label>
+              {t('work.field.line')}
+              <select
+                value={state.line}
+                onChange={(e) => change({ ...state, line: e.target.value })}
+              >
+                {businessLines.map((line) => (
+                  <option key={line.short} value={line.short}>
+                    {line.short} · {line.name}
+                  </option>
+                ))}
+                {customLines.map((line) => (
+                  <option key={line} value={line}>
+                    {line}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="button"
+              className="fd-link"
+              onClick={() => {
+                setAddingLine((open) => !open);
+                setLineNotice('');
+              }}
+            >
+              {t('intake.form.addLine')}
+            </button>
+          </div>
+          <label>
+            {t('intake.form.reference')}
+            <input
+              required
+              type="date"
+              value={state.reference}
+              onChange={(e) => change({ ...state, reference: e.target.value })}
+            />
+          </label>
+        </div>
+        {addingLine && (
+          <div className="fd-line-add">
+            <label>
+              {t('intake.form.lineName')}
+              <input
+                autoFocus
+                value={newLine}
+                onChange={(event) => {
+                  setNewLine(event.target.value);
+                  setLineNotice('');
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    addLine();
+                  }
+                }}
+              />
+            </label>
+            <div className="fd-actions">
+              <button
+                type="button"
+                className="fd-btn fd-small"
+                disabled={!newLine.trim()}
+                onClick={addLine}
+              >
+                {t('intake.form.saveLine')}
+              </button>
+              <button
+                type="button"
+                className="fd-link"
+                onClick={() => {
+                  setAddingLine(false);
+                  setNewLine('');
+                  setLineNotice('');
+                }}
+              >
+                {t('work.action.cancel')}
+              </button>
+            </div>
+          </div>
+        )}
+        {lineNotice && <p role="status">{lineNotice}</p>}
+      </details>
+
       <div className="fd-actions">
-        <button
-          className="fd-btn"
-          disabled={!state.context.trim() || !state.input.trim()}
-        >
+        <button className="fd-btn" disabled={!state.input.trim()}>
           {t('intake.form.submit')}
         </button>
         <button
@@ -290,18 +295,34 @@ function Review({ state, change }: Props) {
   const t = useTranslations(),
     [notice, setNotice] = useState(''),
     [target, setTarget] = useState('');
+  const pendingCount = state.drafts.filter(
+    (draft) => issues(draft, state.items).length
+  ).length;
   return (
     <>
       <p>{t('review.page.intro')}</p>
-      <section className="fd-context-card">
-        <small>{t('review.page.context')}</small>
-        <p>{state.context}</p>
+      {state.context && (
+        <section className="fd-context-card">
+          <small>{t('review.page.context')}</small>
+          <p>{state.context}</p>
+        </section>
+      )}
+      <section className="fd-review-stats" aria-label={t('review.page.checks')}>
+        <div>
+          <span>{t('review.page.total')}</span>
+          <strong>{state.drafts.length}</strong>
+        </div>
+        <div>
+          <span>{t('review.page.pendingLabel')}</span>
+          <strong>{pendingCount}</strong>
+        </div>
+        <div>
+          <span>{t('review.page.readyLabel')}</span>
+          <strong>{state.drafts.length - pendingCount}</strong>
+        </div>
       </section>
       <p className="fd-summary">
-        {t('review.page.pending', {
-          count: state.drafts.filter((d) => issues(d, state.items).length)
-            .length,
-        })}
+        {t('review.page.pending', { count: pendingCount })}
       </p>
       {notice && (
         <div role="status">
@@ -368,6 +389,7 @@ function ReviewCard({
 }) {
   const t = useTranslations(),
     [confirm, setConfirm] = useState(''),
+    [activeField, setActiveField] = useState<EvidenceTarget>('title'),
     pending = issues(d, items),
     matches = duplicates(d, items);
   function edit(field: Field, v: string) {
@@ -385,69 +407,86 @@ function ReviewCard({
         ? lineCandidates
         : people;
   return (
-    <article className="fd-card">
+    <article className="fd-card fd-review-card">
       <div className="fd-row">
         <h2>{value(d, 'title') || t('work.field.empty')}</h2>
         <span className="fd-chip">{d.line}</span>
       </div>
-      <EvidenceFields draft={d} />
-      {pending.map((reason) => (
-        <div className="fd-warning" key={reason}>
-          <p>{t('review.issue.' + reason)}</p>
-        </div>
-      ))}
-      <div className="fd-fields">
-        {(!d.values.title.value || d.edits.title !== undefined) && (
-          <label>
-            {t('work.field.title')}
-            <input
-              value={d.edits.title || ''}
-              onChange={(e) => edit('title', e.target.value)}
-            />
-          </label>
-        )}
-        {(d.match.status !== 'matched' || d.alternatives.owner) && (
-          <label>
-            {t('work.field.owner')}
-            <select
-              value={d.edits.owner || ''}
-              onChange={(e) => edit('owner', e.target.value)}
-            >
-              <option value="">{t('work.field.choose')}</option>
-              {candidates.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} · {p.dept} · {p.id}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        {(d.dates.ambiguous || !d.dates.date || d.alternatives.due) && (
-          <label>
-            {t('work.field.due')}
-            <input
-              type="date"
-              value={d.edits.due || ''}
-              onChange={(e) => edit('due', e.target.value)}
-            />
-          </label>
-        )}
-        {Object.entries(d.alternatives)
-          .filter(([f]) => f !== 'owner' && f !== 'due')
-          .map(([f, opts]) => (
-            <label key={f}>
-              {t('work.field.' + f)}
-              <select
-                value={d.edits[f as Field] || ''}
-                onChange={(e) => edit(f as Field, e.target.value)}
-              >
-                <option value="">{t('work.field.choose')}</option>
-                {opts.map((v) => (
-                  <option key={v}>{v}</option>
-                ))}
-              </select>
-            </label>
+      <div className="fd-review-columns">
+        <SourceEvidence draft={d} active={activeField} />
+        <div className="fd-review-draft">
+          <div className="fd-review-draft-head">
+            <strong>{t('review.page.draftPanel')}</strong>
+            <span>{t('review.page.clickField')}</span>
+          </div>
+          <EvidenceFields
+            draft={d}
+            activeField={activeField}
+            onFieldSelect={setActiveField}
+          />
+          {pending.map((reason) => (
+            <div className="fd-warning" key={reason}>
+              <p>{t('review.issue.' + reason)}</p>
+            </div>
           ))}
+          <div className="fd-fields fd-review-inputs">
+            {(!d.values.title.value || d.edits.title !== undefined) && (
+              <label>
+                {t('work.field.title')}
+                <input
+                  value={d.edits.title || ''}
+                  onChange={(e) => edit('title', e.target.value)}
+                  onFocus={() => setActiveField('title')}
+                />
+              </label>
+            )}
+            {(d.match.status !== 'matched' || d.alternatives.owner) && (
+              <label>
+                {t('work.field.owner')}
+                <select
+                  value={d.edits.owner || ''}
+                  onChange={(e) => edit('owner', e.target.value)}
+                  onFocus={() => setActiveField('owner')}
+                >
+                  <option value="">{t('work.field.choose')}</option>
+                  {candidates.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} · {p.dept} · {p.id}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {(d.dates.ambiguous || !d.dates.date || d.alternatives.due) && (
+              <label>
+                {t('work.field.due')}
+                <input
+                  type="date"
+                  value={d.edits.due || ''}
+                  onChange={(e) => edit('due', e.target.value)}
+                  onFocus={() => setActiveField('due')}
+                />
+              </label>
+            )}
+            {Object.entries(d.alternatives)
+              .filter(([f]) => f !== 'owner' && f !== 'due')
+              .map(([f, opts]) => (
+                <label key={f}>
+                  {t('work.field.' + f)}
+                  <select
+                    value={d.edits[f as Field] || ''}
+                    onChange={(e) => edit(f as Field, e.target.value)}
+                    onFocus={() => setActiveField(f as Field)}
+                  >
+                    <option value="">{t('work.field.choose')}</option>
+                    {opts.map((v) => (
+                      <option key={v}>{v}</option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+          </div>
+        </div>
       </div>
       {matches.length > 0 && (
         <div>
@@ -680,14 +719,16 @@ function Detail({ state, change, id }: Props & { id: string }) {
           <h2>{value(item, 'title')}</h2>
           <span className="fd-chip">
             {t('work.status.' + status(item, currentDate()))} ·{' '}
-            {t('work.field.rule')}
+            {t(item.closed ? 'work.field.userAction' : 'work.field.rule')}
           </span>
         </div>
         <p>{item.line}</p>
-        <div className="fd-context-card">
-          <small>{t('detail.page.context')}</small>
-          <p>{item.context}</p>
-        </div>
+        {item.context && (
+          <div className="fd-context-card">
+            <small>{t('detail.page.context')}</small>
+            <p>{item.context}</p>
+          </div>
+        )}
         <h3>{t('detail.page.fields')}</h3>
         <EvidenceFields draft={item} />
         <div className="fd-actions">
@@ -754,7 +795,13 @@ function Detail({ state, change, id }: Props & { id: string }) {
         <ol className="fd-history">
           {item.history.map((h, i) => (
             <li key={i}>
-              {t('detail.log.' + h.kind)} ·{' '}
+              <span>{t('detail.log.' + h.kind)}</span>
+              <small className="fd-chip">
+                {t(
+                  'detail.source.' +
+                    (h.source ?? (h.kind === 'sample' ? 'fixture' : 'user'))
+                )}
+              </small>
               <time>{h.at.replace('T', ' ').slice(0, 19)}</time>
             </li>
           ))}

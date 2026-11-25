@@ -14,6 +14,8 @@
   "field": {
     "title": "Action title",
     "owner": "Owner",
+    "contact": "Contact",
+    "participant": "Participant",
     "department": "Supporting department",
     "due": "Due date",
     "priority": "Priority",
@@ -28,7 +30,12 @@
     "noEvidence": "This field has no supporting text.",
     "manual": "Confirmed value",
     "ai": "AI extraction (sample)",
-    "rule": "Rule result"
+    "rule": "Rule result",
+    "userAction": "User-confirmed action",
+    "pendingConfirm": "Current user to confirm",
+    "ownerRole": "Drives the action to completion",
+    "participantRole": "Joins the conversation; not automatically the owner",
+    "personMatch": "Matched to {name} ({dept} · ID {id})"
   },
   "action": {
     "cancel": "Cancel",

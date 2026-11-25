@@ -7,7 +7,15 @@
     "ready": "Ready to confirm",
     "empty": "You have reviewed this batch.",
     "saved": "Action added to the list.",
-    "merged": "Merged. Open the target action to inspect or undo the change."
+    "merged": "Merged. Open the target action to inspect or undo the change.",
+    "checks": "Batch checks",
+    "total": "Drafts",
+    "pendingLabel": "Needs attention",
+    "readyLabel": "Ready to save",
+    "sourcePanel": "Linked source",
+    "sourceHelp": "Select a field to locate its sentence",
+    "draftPanel": "Action draft",
+    "clickField": "Fields linked to source"
   },
   "issue": {
     "title": "The title is missing. Add one after checking the source.",

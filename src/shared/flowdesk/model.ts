@@ -3,7 +3,6 @@ import {
   departments,
   lines,
   people,
-  sampleRequirement,
   sampleText,
   sourceDate,
 } from './fixtures';
@@ -24,6 +23,10 @@ export type Match = {
   via: 'employee' | 'full' | 'short' | 'alias' | 'none';
 };
 export type DateResult = { date: string; end?: string; ambiguous?: boolean };
+export type MentionRoles = {
+  contact: Evidence;
+  participants: Evidence[];
+};
 export type Draft = {
   id: string;
   line: string;
@@ -32,6 +35,8 @@ export type Draft = {
   reference: string;
   values: Record<Field, Evidence>;
   match: Match;
+  contactMatch: Match;
+  mentions: MentionRoles;
   dates: DateResult;
   alternatives: Partial<Record<Field, string[]>>;
   evidence?: Partial<Record<Field, string[]>>;
@@ -46,6 +51,7 @@ export type Action = Draft & {
 export type Entry = {
   kind: 'sample' | 'created' | 'merged' | 'closed' | 'undone';
   at: string;
+  source?: 'fixture' | 'system' | 'user';
 };
 type Undo = {
   itemId: string;
@@ -175,125 +181,168 @@ function findValues(sentences: string[], pattern: RegExp): Evidence[] {
     return m ? [{ value: m[1].trim(), sentence }] : [];
   });
 }
+export function splitSourceBlocks(raw: string): string[] {
+  const numbered = raw
+    .replace(/(^|\n)\s*\d+[、.．]\s*/g, '$1\n\n')
+    .replace(/([^\n])\s+\d+[、.．]\s*/g, '$1\n\n');
+  const paragraphs = numbered
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+  if (paragraphs.length > 1) return paragraphs;
+  const lines = raw
+    .split(/\n+/)
+    .map((line) => line.replace(/^\s*\d+[、.．]\s*/, '').trim())
+    .filter(Boolean);
+  return lines.length > 1 ? lines : paragraphs;
+}
 export function extract(
   raw: string,
   line: string,
   reference: string,
   context = ''
 ): Draft[] {
-  return raw
-    .trim()
-    .split(/\n\s*\n/)
-    .filter(Boolean)
-    .map((block, index) => {
-      const sentences = sourceFragments(block)
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const data: Record<Field, Evidence[]> = {
-        title: findValues(sentences, /[「“]([^」”]+)[」”]/),
-        owner: [],
-        department: findValues(
-          sentences,
-          /(?:协办部门|协办|support)\s*[:：]\s*([^。，；;.]+)/i
-        ),
-        due: [],
-        priority: findValues(
-          sentences,
-          /(?:优先级|priority)\s*[:：]\s*(高|中|低|high|medium|low)/i
-        ),
-        source: findValues(sentences, /【([^】]+)】/),
-      };
-      if (!data.title.length)
-        data.title = findValues(
-          sentences,
-          /(?:事项(?:标题)?|title)\s*[:：]\s*([^。；;.]+)/i
-        );
-      if (!data.title.length) {
-        const briefing = sentences
+  return raw.trim()
+    ? splitSourceBlocks(raw).map((block, index) => {
+        const sentences = sourceFragments(block)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const data: Record<Field, Evidence[]> = {
+          title: findValues(sentences, /[「“]([^」”]+)[」”]/),
+          owner: [],
+          department: findValues(
+            sentences,
+            /(?:协办部门|协办|support)\s*[:：]\s*([^。，；;.]+)/i
+          ),
+          due: [],
+          priority: findValues(
+            sentences,
+            /(?:优先级|priority)\s*[:：]\s*(高|中|低|high|medium|low)/i
+          ),
+          source: findValues(sentences, /【([^】]+)】/),
+        };
+        if (!data.title.length)
+          data.title = findValues(
+            sentences,
+            /(?:事项(?:标题)?|title)\s*[:：]\s*([^。；;.]+)/i
+          );
+        if (!data.title.length) {
+          const appointment = sentences
+            .map((sentence) => ({
+              sentence,
+              match: sentence.match(/跟([^，,]+秘书)约下时间/),
+            }))
+            .find((item) => item.match);
+          if (appointment?.match)
+            data.title = [
+              {
+                value: `联系${appointment.match[1].trim()}，预约立项沟通时间`,
+                sentence: appointment.sentence,
+              },
+            ];
+        }
+        if (!data.title.length) {
+          const briefing = sentences
+            .map((sentence) => ({
+              sentence,
+              match: sentence.match(
+                /(?:这周要)?跟([^，,]+?)交流一下([^，,]+?)(?:的事情)?(?:，|,|$)/
+              ),
+            }))
+            .find((item) => item.match);
+          if (briefing?.match)
+            data.title = [
+              {
+                value:
+                  '与' +
+                  briefing.match[1].trim() +
+                  '沟通' +
+                  briefing.match[2].trim().replace(/的事情$/, ''),
+                sentence: briefing.sentence,
+              },
+            ];
+        }
+        if (!data.title.length) {
+          data.title = findValues(
+            sentences,
+            /(?:这周要)?((?:跟[^。，,；;.!?]+交流)(?:一下)?)/
+          );
+        }
+        if (!data.title.length) {
+          data.title = findValues(
+            sentences,
+            /(?:请|需要|负责|帮忙|前)(?:先|完成)?((?:核对|提交|整理|确认|复核|补齐|更新|交付|汇总|发送|预定)[^。，,；;.!?]+)/
+          );
+        }
+        if (!data.source.length)
+          data.source = findValues(
+            sentences,
+            /(?:来源|source)\s*[:：]\s*([^。；;.]+)/i
+          );
+        for (const sentence of sentences) {
+          const content = sentence.replace(/【[^】]+】/g, '').trim();
+          const explicit = content.match(
+            /(?:负责人|owner)\s*[:：]\s*([^，。,；;.]+)/i
+          );
+          const terms = people
+            .flatMap((person) => [
+              person.name,
+              ...person.short,
+              ...person.aliases,
+            ])
+            .sort((a, b) => b.length - a.length);
+          const responsibility = terms.find((term) => {
+            const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return new RegExp(
+              `(?:${escaped}.{0,6}(?:负责|推进|跟进|处理)|(?:请|由|让).{0,4}${escaped}.{0,4}(?:负责|推进|跟进|处理))`,
+              'i'
+            ).test(content);
+          });
+          const owner = explicit?.[1] || responsibility;
+          if (owner) data.owner.push({ value: owner.trim(), sentence });
+          const due =
+            content.match(duePattern)?.[0] ||
+            content.match(/(?:截止(?:时间)?|due)\s*[:：]\s*([^。；;.]+)/i)?.[1];
+          if (due) data.due.push({ value: due, sentence });
+        }
+        const values = {} as Draft['values'],
+          alternatives: Draft['alternatives'] = {};
+        const evidence: Draft['evidence'] = {};
+        for (const f of fields) {
+          evidence[f] = data[f].map((hit) => hit.sentence);
+          values[f] = data[f][0] ?? { value: '', sentence: '' };
+          const distinct = [...new Set(data[f].map((v) => v.value))];
+          if (distinct.length > 1) alternatives[f] = distinct;
+        }
+        const contact = sentences
           .map((sentence) => ({
             sentence,
-            match: sentence.match(
-              /(?:这周要)?跟([^，,]+?)交流一下([^，,]+?)(?:的事情)?(?:，|,|$)/
-            ),
+            value: sentence.match(/跟([^，,]+秘书)约下时间/)?.[1]?.trim() ?? '',
           }))
-          .find((item) => item.match);
-        if (briefing?.match)
-          data.title = [
-            {
-              value:
-                '与' +
-                briefing.match[1].trim() +
-                '沟通' +
-                briefing.match[2].trim().replace(/的事情$/, ''),
-              sentence: briefing.sentence,
-            },
-          ];
-      }
-      if (!data.title.length) {
-        data.title = findValues(
-          sentences,
-          /(?:这周要)?((?:跟[^。，,；;.!?]+交流)(?:一下)?)/
-        );
-      }
-      if (!data.title.length) {
-        data.title = findValues(
-          sentences,
-          /(?:请|需要|负责|帮忙|前)(?:先|完成)?((?:核对|提交|整理|确认|复核|补齐|更新|交付|汇总|发送|预定)[^。，,；;.!?]+)/
-        );
-      }
-      if (!data.source.length)
-        data.source = findValues(
-          sentences,
-          /(?:来源|source)\s*[:：]\s*([^。；;.]+)/i
-        );
-      for (const sentence of sentences) {
-        const content = sentence.replace(/【[^】]+】/g, '').trim();
-        const explicit = content.match(
-          /(?:负责人|owner)\s*[:：]\s*([^，。,；;.]+)/i
-        );
-        const terms = people
-          .flatMap((person) => [
-            person.name,
-            ...person.short,
-            ...person.aliases,
-          ])
-          .sort((a, b) => b.length - a.length);
-        const shorthand = terms.find((term) =>
-          content.toLowerCase().includes(term.toLowerCase())
-        );
-        const employee = content.match(
-          /(?:工号\s*)?\b\d{4}\b(?!(?:[-/年]\d))/
-        )?.[0];
-        const owner = explicit?.[1] || shorthand || employee;
-        if (owner) data.owner.push({ value: owner.trim(), sentence });
-        const due =
-          content.match(duePattern)?.[0] ||
-          content.match(/(?:截止(?:时间)?|due)\s*[:：]\s*([^。；;.]+)/i)?.[1];
-        if (due) data.due.push({ value: due, sentence });
-      }
-      const values = {} as Draft['values'],
-        alternatives: Draft['alternatives'] = {};
-      const evidence: Draft['evidence'] = {};
-      for (const f of fields) {
-        evidence[f] = data[f].map((hit) => hit.sentence);
-        values[f] = data[f][0] ?? { value: '', sentence: '' };
-        const distinct = [...new Set(data[f].map((v) => v.value))];
-        if (distinct.length > 1) alternatives[f] = distinct;
-      }
-      return {
-        id: 'draft-' + index,
-        line: detectBusinessLine(block, line),
-        raw: block,
-        context,
-        reference,
-        values,
-        match: matchOwner(values.owner.value),
-        dates: normalizeDate(values.due.value, reference),
-        alternatives,
-        evidence,
-        edits: {},
-      };
-    });
+          .find((item) => item.value) ?? { value: '', sentence: '' };
+        const participants = sentences.flatMap((sentence) => {
+          const participant = sentence
+            .match(/跟([^，,]+?)交流一下/)?.[1]
+            ?.trim();
+          return participant ? [{ value: participant, sentence }] : [];
+        });
+        return {
+          id: 'draft-' + index,
+          line: detectBusinessLine(block, line),
+          raw: block,
+          context,
+          reference,
+          values,
+          match: matchOwner(values.owner.value),
+          contactMatch: matchOwner(contact.value),
+          mentions: { contact, participants },
+          dates: normalizeDate(values.due.value, reference),
+          alternatives,
+          evidence,
+          edits: {},
+        };
+      })
+    : [];
 }
 export function ownerId(d: Draft) {
   return d.edits.owner ?? (d.match.status === 'matched' ? d.match.ids[0] : '');
@@ -341,20 +390,20 @@ export function status(item: Action, today: string) {
       : 'open';
 }
 export function initialWorkspace(): Workspace {
-  const drafts = extract(sampleText, lines[0], sourceDate, sampleRequirement);
+  const drafts = extract(sampleText, lines[0], sourceDate);
   const make = (d: Draft, id: string): Action => ({
     ...d,
     id,
     closed: false,
     sources: [d.raw],
-    history: [{ kind: 'sample', at: sourceDate }],
+    history: [{ kind: 'sample', at: sourceDate, source: 'fixture' }],
   });
   const confirmed: Draft = {
     ...drafts[0],
-    edits: { ...drafts[0].edits, due: '2026-11-29' },
+    edits: { ...drafts[0].edits, owner: '0001', due: '2026-11-29' },
   };
   return {
-    context: sampleRequirement,
+    context: '',
     input: sampleText,
     reference: sourceDate,
     line: '计算',
@@ -370,7 +419,11 @@ export function writeDraft(state: Workspace, d: Draft): Workspace {
     issues(d, state.items).length
   )
     return state;
-  const entry: Entry = { kind: 'created', at: new Date().toISOString() };
+  const entry: Entry = {
+    kind: 'created',
+    at: new Date().toISOString(),
+    source: 'user',
+  };
   const item: Action = {
     ...d,
     id: crypto.randomUUID(),
@@ -400,7 +453,7 @@ export function changeAction(
   )
     return state;
   const removed = state.items.find((i) => i.id === source?.id);
-  const entry = { kind, at: new Date().toISOString() };
+  const entry: Entry = { kind, at: new Date().toISOString(), source: 'user' };
   const updated: Action = {
     ...target,
     closed: kind === 'closed',
@@ -438,7 +491,7 @@ export function undoAction(state: Workspace, id: string): Workspace {
     ...last.previous,
     history: [
       ...target.history,
-      { kind: 'undone', at: new Date().toISOString() },
+      { kind: 'undone', at: new Date().toISOString(), source: 'user' },
     ],
   };
   const draft = last.draft

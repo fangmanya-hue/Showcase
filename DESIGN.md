@@ -18,6 +18,7 @@ FlowDesk is an enterprise action workspace. The interface should feel precise, a
 - The landing first viewport is a split: product promise on the left, a real FlowDesk input-to-draft interface on the right.
 - Give every landing section one job and generous vertical separation. Alternate composition instead of repeating equal icon cards.
 - Operate pages prioritize the current task, review state, source evidence, and next action. Forms use visible labels and 46px minimum controls.
+- Workspace headings stay compact. Review uses a source-and-draft split so a field selection reveals its sentence without leaving the current draft.
 - On mobile, content becomes a single reading column, actions become full-width, and process diagrams stack without horizontal scrolling.
 
 ## Interaction and accessibility
@@ -32,3 +33,4 @@ FlowDesk is an enterprise action workspace. The interface should feel precise, a
 - Use “事项” / “action” consistently.
 - Do not invent customer logos, performance figures, or proof.
 - AI values, rule-calculated values, missing fields, and human confirmation must remain visually distinct.
+- Keep owner, contact, and participant as separate roles. A mentioned contact or participant never becomes the owner without explicit source evidence or user confirmation.

@@ -16,5 +16,10 @@
     "merged": "Confirmed merge and linked source messages",
     "closed": "Confirmed closure",
     "undone": "Undid the change and restored the previous state"
+  },
+  "source": {
+    "fixture": "Demo data",
+    "system": "System rule",
+    "user": "User confirmed"
   }
 }
