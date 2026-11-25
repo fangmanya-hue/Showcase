@@ -5,19 +5,29 @@
     "title": "成为可追踪事项。",
     "sub": "结合需求背景理解沟通内容，提取负责人、截止时间与行动事项；保留原文依据，把需要判断的部分交给人确认。",
     "start": "开始整理事项",
-    "workflow": "了解工作方式"
+    "workflow": "了解工作方式",
+    "boundary": "AI 负责提取与建议，规则负责校验，人负责最终确认"
   },
   "visual": {
     "label": "事项理解引擎",
     "ready": "等待输入",
+    "source": "输入材料",
     "requirement": "需求背景",
+    "requirementState": "明确本次协作目标",
     "conversation": "部门群聊",
+    "conversationState": "保留原始沟通上下文",
     "interpretation": "理解约定与行动",
     "draft": "结构化事项草稿",
+    "review": "待核对",
     "owner": "负责人",
     "due": "截止时间",
     "evidence": "原文依据",
-    "status": "跟进状态"
+    "status": "跟进状态",
+    "ai": "AI 提取",
+    "rule": "规则校验",
+    "pending": "需要确认",
+    "trace": "字段可回到原句",
+    "confirm": "确认后写入"
   },
   "principles": {
     "evidence": "每个字段都有依据",

@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   BrainCircuit,
   CalendarClock,
   CheckCircle2,
@@ -39,11 +40,7 @@ export async function FlowdeskHome() {
       <section className="fd-hero">
         <div className="fd-wrap">
           <div className="fd-hero-grid">
-            <div>
-              <p className="fd-kicker">
-                <span className="fd-line" />
-                {t('hero.eyebrow')}
-              </p>
+            <div className="fd-hero-copy">
               <h1>
                 {t('hero.lead')}
                 <br />
@@ -52,13 +49,17 @@ export async function FlowdeskHome() {
               <p className="fd-lede">{t('hero.sub')}</p>
               <div className="fd-actions">
                 <Link className="fd-btn" href={paths.intake}>
-                  <MessageSquareText />
                   {t('hero.start')}
+                  <ArrowRight />
                 </Link>
                 <Link className="fd-btn fd-secondary" href="/#workflow">
                   {t('hero.workflow')}
                 </Link>
               </div>
+              <p className="fd-hero-boundary">
+                <ShieldCheck />
+                {t('hero.boundary')}
+              </p>
             </div>
             <aside className="fd-system-preview" aria-label={t('visual.label')}>
               <div className="fd-system-head">
@@ -70,30 +71,56 @@ export async function FlowdeskHome() {
               </div>
               <div className="fd-system-flow">
                 <div className="fd-system-source">
-                  <div>
-                    <BrainCircuit />
-                    <span>{t('visual.requirement')}</span>
+                  <p>{t('visual.source')}</p>
+                  <div className="fd-source-row">
+                    <span className="fd-source-icon">
+                      <BrainCircuit />
+                    </span>
+                    <span>
+                      <strong>{t('visual.requirement')}</strong>
+                      <small>{t('visual.requirementState')}</small>
+                    </span>
                   </div>
-                  <div>
-                    <MessageSquareText />
-                    <span>{t('visual.conversation')}</span>
+                  <div className="fd-source-row">
+                    <span className="fd-source-icon">
+                      <MessageSquareText />
+                    </span>
+                    <span>
+                      <strong>{t('visual.conversation')}</strong>
+                      <small>{t('visual.conversationState')}</small>
+                    </span>
                   </div>
                 </div>
                 <div className="fd-system-process">
                   <ScanLine />
-                  <strong>{t('visual.interpretation')}</strong>
+                  <span>{t('visual.interpretation')}</span>
                 </div>
                 <div className="fd-system-draft">
-                  <p>{t('visual.draft')}</p>
-                  {(['owner', 'due', 'evidence', 'status'] as const).map(
-                    (field) => (
-                      <div key={field}>
-                        <CheckCircle2 />
-                        <span>{t('visual.' + field)}</span>
-                      </div>
-                    )
-                  )}
+                  <div className="fd-draft-head">
+                    <p>{t('visual.draft')}</p>
+                    <span>{t('visual.review')}</span>
+                  </div>
+                  <div>
+                    <span>{t('visual.owner')}</span>
+                    <small>{t('visual.ai')}</small>
+                  </div>
+                  <div>
+                    <span>{t('visual.due')}</span>
+                    <small>{t('visual.rule')}</small>
+                  </div>
+                  <div>
+                    <span>{t('visual.evidence')}</span>
+                    <CheckCircle2 />
+                  </div>
+                  <div className="fd-draft-open">
+                    <span>{t('visual.status')}</span>
+                    <small>{t('visual.pending')}</small>
+                  </div>
                 </div>
+              </div>
+              <div className="fd-system-foot">
+                <span>{t('visual.trace')}</span>
+                <span>{t('visual.confirm')}</span>
               </div>
             </aside>
           </div>
@@ -111,24 +138,43 @@ export async function FlowdeskHome() {
         </div>
       </section>
 
-      <section className="fd-wrap fd-section fd-split">
-        <div>
-          <p className="fd-kicker">{t('problem.label')}</p>
-          <h2>{t('problem.title')}</h2>
+      <section className="fd-section fd-problem">
+        <div className="fd-wrap fd-split">
+          <div className="fd-section-heading">
+            <h2>{t('problem.title')}</h2>
+            <span>{t('problem.label')}</span>
+          </div>
+          <div>
+            <p className="fd-paragraph">{t('problem.body')}</p>
+            <div className="fd-problem-path" aria-hidden="true">
+              <span>{t('visual.conversation')}</span>
+              <ArrowRight />
+              <span>{t('visual.draft')}</span>
+              <ArrowRight />
+              <span>{t('visual.confirm')}</span>
+            </div>
+          </div>
         </div>
-        <p className="fd-paragraph">{t('problem.body')}</p>
       </section>
 
       <section id="workflow" className="fd-band">
         <div className="fd-wrap fd-section">
-          <p className="fd-kicker">{t('workflow.label')}</p>
-          <h2>{t('workflow.title')}</h2>
+          <div className="fd-section-heading fd-section-heading-row">
+            <h2>{t('workflow.title')}</h2>
+            <span>{t('workflow.label')}</span>
+          </div>
           <div className="fd-steps">
-            {steps.map(([key, Icon]) => (
+            {steps.map(([key, Icon], index) => (
               <Link key={key} href={paths[key]}>
-                <Icon />
-                <h3>{t('workflow.' + key)}</h3>
-                <p>{t('workflow.' + key + 'Text')}</p>
+                <div className="fd-step-head">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <Icon />
+                </div>
+                <div>
+                  <h3>{t('workflow.' + key)}</h3>
+                  <p>{t('workflow.' + key + 'Text')}</p>
+                </div>
+                <ArrowRight className="fd-step-arrow" />
               </Link>
             ))}
           </div>
@@ -136,15 +182,26 @@ export async function FlowdeskHome() {
       </section>
 
       <section id="features" className="fd-wrap fd-section">
-        <p className="fd-kicker">{t('features.label')}</p>
-        <h2>{t('features.title')}</h2>
-        <p className="fd-section-intro">{t('features.intro')}</p>
+        <div className="fd-section-heading fd-feature-heading">
+          <div>
+            <h2>{t('features.title')}</h2>
+            <span>{t('features.label')}</span>
+          </div>
+          <p className="fd-section-intro">{t('features.intro')}</p>
+        </div>
         <div className="fd-feature-grid">
-          {features.map(([key, Icon]) => (
-            <article key={key}>
-              <Icon />
-              <h3>{t('features.' + key)}</h3>
-              <p>{t('features.' + key + 'Text')}</p>
+          {features.map(([key, Icon], index) => (
+            <article
+              key={key}
+              className={index < 2 ? 'fd-feature-primary' : ''}
+            >
+              <div className="fd-feature-icon">
+                <Icon />
+              </div>
+              <div>
+                <h3>{t('features.' + key)}</h3>
+                <p>{t('features.' + key + 'Text')}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -152,14 +209,14 @@ export async function FlowdeskHome() {
 
       <section className="fd-trust">
         <div className="fd-wrap fd-section fd-split">
-          <div>
-            <p className="fd-kicker">
-              <ShieldCheck />
-              {t('trust.label')}
-            </p>
+          <div className="fd-section-heading">
             <h2>{t('trust.title')}</h2>
+            <span>{t('trust.label')}</span>
           </div>
-          <p>{t('trust.body')}</p>
+          <div className="fd-trust-copy">
+            <ShieldCheck />
+            <p>{t('trust.body')}</p>
+          </div>
         </div>
       </section>
 

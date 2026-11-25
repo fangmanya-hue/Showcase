@@ -5,19 +5,29 @@
     "title": "into actions your team can track.",
     "sub": "Use the request context to interpret conversations, extract owners and dates, preserve source evidence, and send uncertain details to a human for review.",
     "start": "Create actions",
-    "workflow": "See how it works"
+    "workflow": "See how it works",
+    "boundary": "AI extracts and suggests. Rules validate. People make the final call."
   },
   "visual": {
     "label": "Action understanding engine",
     "ready": "Waiting for input",
+    "source": "Source material",
     "requirement": "Request context",
+    "requirementState": "Define the intended outcome",
     "conversation": "Team conversation",
+    "conversationState": "Keep the original context",
     "interpretation": "Interpret commitments",
     "draft": "Structured action draft",
+    "review": "Needs review",
     "owner": "Owner",
     "due": "Due date",
     "evidence": "Source evidence",
-    "status": "Tracking status"
+    "status": "Tracking status",
+    "ai": "AI extracted",
+    "rule": "Rule validated",
+    "pending": "Confirm required",
+    "trace": "Trace fields to source",
+    "confirm": "Write after confirmation"
   },
   "principles": {
     "evidence": "Evidence for every field",
