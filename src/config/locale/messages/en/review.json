@@ -17,6 +17,16 @@
     "draftPanel": "Action draft",
     "clickField": "Fields linked to source"
   },
+  "analysis": {
+    "title": "Conversation analysis",
+    "ai": "AI connected context across messages. Program rules still validate dates, matches, and overdue status.",
+    "rule": "AI is temporarily unavailable. Local rules created this draft batch.",
+    "participants": "People and groups involved",
+    "decisions": "Decisions",
+    "constraints": "Constraints and operating rules",
+    "openQuestions": "Open questions",
+    "none": "No related information was found in the source."
+  },
   "issue": {
     "title": "The title is missing. Add one after checking the source.",
     "missing": "No owner was named. Choose one after checking the source.",
@@ -31,6 +41,7 @@
     "separate": "Keep as a separate action",
     "target": "Merge target",
     "ruleRange": "Date range: {start} to {end}",
-    "noDate": "No date resolved"
+    "noDate": "No date resolved",
+    "confirmSuggestedOwner": "Confirm {name} as the owner named in the source"
   }
 }

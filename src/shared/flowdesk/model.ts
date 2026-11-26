@@ -27,6 +27,18 @@ export type MentionRoles = {
   contact: Evidence;
   participants: Evidence[];
 };
+export type ConversationInsight = {
+  text: string;
+  evidence: string;
+};
+export type ConversationAnalysis = {
+  sourceName: string;
+  summary: string;
+  participants: string[];
+  decisions: ConversationInsight[];
+  constraints: ConversationInsight[];
+  openQuestions: ConversationInsight[];
+};
 export type Draft = {
   id: string;
   line: string;
@@ -41,6 +53,8 @@ export type Draft = {
   alternatives: Partial<Record<Field, string[]>>;
   evidence?: Partial<Record<Field, string[]>>;
   edits: Partial<Record<Field, string>>;
+  extractionSource?: 'ai' | 'rule';
+  confidence?: number;
   separate?: boolean;
 };
 export type Action = Draft & {
@@ -69,6 +83,11 @@ export type Workspace = {
   drafts: Draft[];
   items: Action[];
   undo: Undo[];
+  analysis?: ConversationAnalysis;
+  lastExtraction?: {
+    source: 'ai' | 'rule';
+    at: string;
+  };
 };
 export function detectBusinessLine(raw: string, fallback: string) {
   const input = raw.toLowerCase();
@@ -131,6 +150,28 @@ export function normalizeDate(raw: string, ref: string): DateResult {
       absolute[1],
       absolute[2].padStart(2, '0'),
       absolute[3].padStart(2, '0'),
+    ].join('-');
+    const parsed = Date.parse(candidate + 'T00:00:00Z');
+    return {
+      date:
+        Number.isFinite(parsed) &&
+        new Date(parsed).toISOString().slice(0, 10) === candidate
+          ? candidate
+          : '',
+    };
+  }
+  const yearless = raw.match(/(?:^|[^\d])(\d{1,2})[\/月](\d{1,2})日?/);
+  if (yearless) {
+    const reference = new Date(start);
+    const month = Number(yearless[1]);
+    const date = Number(yearless[2]);
+    let year = reference.getUTCFullYear();
+    // A December conversation that schedules January usually means next year.
+    if (reference.getUTCMonth() + 1 - month > 6) year += 1;
+    const candidate = [
+      String(year),
+      String(month).padStart(2, '0'),
+      String(date).padStart(2, '0'),
     ].join('-');
     const parsed = Date.parse(candidate + 'T00:00:00Z');
     return {
@@ -340,6 +381,7 @@ export function extract(
           alternatives,
           evidence,
           edits: {},
+          extractionSource: 'rule',
         };
       })
     : [];
@@ -411,6 +453,7 @@ export function initialWorkspace(): Workspace {
     drafts,
     items: [make(confirmed, 'sample')],
     undo: [],
+    lastExtraction: { source: 'rule', at: sourceDate },
   };
 }
 export function writeDraft(state: Workspace, d: Draft): Workspace {

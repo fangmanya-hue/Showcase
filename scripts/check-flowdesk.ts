@@ -3,6 +3,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
+  draftsFromAI,
+  FLOWDESK_EXTRACTION_PROMPT,
+  parseAIExtraction,
+} from '../src/shared/flowdesk/ai';
+import {
   businessLines,
   examples,
   sampleText,
@@ -96,6 +101,11 @@ assert.deepEqual(normalizeDate('下周找个时间', sourceDate), {
 assert.equal(normalizeDate('下周天', sourceDate).date, '2026-12-06');
 assert.equal(normalizeDate('2026-02-30', sourceDate).date, '');
 assert.equal(normalizeDate('明天', sourceDate).date, '2026-11-24');
+assert.equal(normalizeDate('11/27 18:00', '2026-11-26').date, '2026-11-27');
+assert.equal(
+  normalizeDate('12月1日周二14:00到16:30', '2026-11-26').date,
+  '2026-12-01'
+);
 assert.equal(sourceFragments(sampleText).join(''), sampleText);
 assert.equal(
   splitSourceBlocks(`1、${examples[0]} 2、${examples[1]}`).length,
@@ -152,6 +162,97 @@ assert.equal(
   extract('群里只说尽快跟进。', 'ICT', sourceDate)[0].values.owner.value,
   ''
 );
+
+const complexChat = `群名:产品运营部Q4复盘暨12月排期会筹备群
+11/26 10:02 小李:@所有人先发个会议草案，大家看下有没有冲突。主题是Q4项目复盘暨12月排期会，拟时间12月1日周二14:00到16:30，13:50前入场签到，地点3F-302会议室，腾讯会议同步123456789，密码1201。参会是部门全员加市场、交付、支持接口人，外地或客户现场可以线上，但提前报备。议题收集截止11/27 18:00，材料截止11/30 12:00。先别接龙，我把投票放群里，时间定了再发正式接龙。
+11/26 10:05 王姐:收到，周二下午可以，周三下午我有客户会，尽量别排周三。会议必须控时，超时议题转会后小会，不临时加议题。
+11/26 10:07 张哥:我周三15:00有客户验收，周二14:00没问题。302够坐吗，接口人来几个?
+11/26 10:10 陈晨:302能坐18人左右。建议线上也开，外地同事和客户现场同学方便。投屏接口我确认下，Type-C和HDMI都带转接头。`;
+const aiExtraction = parseAIExtraction(
+  JSON.stringify({
+    conversation: {
+      source_name: '产品运营部Q4复盘暨12月排期会筹备群',
+      summary: '筹备Q4复盘暨12月排期会并收齐议题和材料。',
+      participants: ['小李', '王姐', '张哥', '陈晨'],
+      decisions: [
+        {
+          text: '会议同时开放线上参会',
+          evidence: '建议线上也开，外地同事和客户现场同学方便',
+        },
+      ],
+      constraints: [
+        {
+          text: '不临时增加议题',
+          evidence: '会议必须控时，超时议题转会后小会，不临时加议题',
+        },
+      ],
+      open_questions: [
+        { text: '确认接口人人数', evidence: '302够坐吗，接口人来几个?' },
+      ],
+    },
+    actions: [
+      {
+        title: '收集会议议题',
+        owner: '',
+        contacts: [],
+        participants: ['部门全员', '市场接口人', '交付接口人', '支持接口人'],
+        department: '',
+        due_text: '11/27 18:00',
+        priority: '',
+        business_line: '',
+        source: '产品运营部Q4复盘暨12月排期会筹备群',
+        confidence: 0.96,
+        needs_confirmation: ['owner'],
+        alternatives: {},
+        evidence: {
+          title: ['议题收集截止11/27 18:00'],
+          owner: [],
+          due: ['议题收集截止11/27 18:00'],
+          participants: ['参会是部门全员加市场、交付、支持接口人'],
+          source: ['群名:产品运营部Q4复盘暨12月排期会筹备群'],
+        },
+      },
+      {
+        title: '确认投屏接口和转接头',
+        owner: '陈晨',
+        contacts: [],
+        participants: [],
+        department: '',
+        due_text: '',
+        priority: '',
+        business_line: '',
+        source: '产品运营部Q4复盘暨12月排期会筹备群',
+        confidence: 0.98,
+        needs_confirmation: ['due'],
+        alternatives: {},
+        evidence: {
+          title: ['投屏接口我确认下，Type-C和HDMI都带转接头'],
+          owner: ['陈晨:302能坐18人左右'],
+          due: [],
+          source: ['群名:产品运营部Q4复盘暨12月排期会筹备群'],
+        },
+      },
+    ],
+  })
+);
+const aiMapped = draftsFromAI({
+  raw: complexChat,
+  reference: '2026-11-26',
+  fallbackLine: 'ICT',
+  extraction: aiExtraction,
+});
+assert.equal(aiMapped.drafts.length, 2);
+assert.equal(aiMapped.drafts[0].dates.date, '2026-11-27');
+assert.equal(aiMapped.drafts[0].match.status, 'not_found');
+assert.equal(aiMapped.drafts[0].extractionSource, 'ai');
+assert.equal(aiMapped.drafts[1].values.owner.value, '陈晨');
+assert.equal(
+  aiMapped.analysis.constraints[0].evidence.includes('会议必须控时'),
+  true
+);
+assert.equal(aiMapped.analysis.openQuestions[0].text, '确认接口人人数');
+assert.match(FLOWDESK_EXTRACTION_PROMPT, /发言人不自动等于 owner/);
+assert.match(FLOWDESK_EXTRACTION_PROMPT, /秘书是 contact/);
 console.log(
   'FlowDesk workflow checks passed. Locale resource paths and keys agree (' +
     files.length +

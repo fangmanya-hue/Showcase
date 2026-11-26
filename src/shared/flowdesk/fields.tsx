@@ -70,7 +70,13 @@ export function EvidenceFields({
   );
   const fieldValue = (field: Field) => {
     const extracted = draft.values[field];
-    if (field === 'owner') return owner?.name || t('work.field.empty');
+    if (field === 'owner')
+      return (
+        owner?.name ||
+        draft.edits.owner ||
+        extracted.value ||
+        t('work.field.empty')
+      );
     return value(draft, field) || extracted.value || t('work.field.empty');
   };
 
@@ -86,7 +92,13 @@ export function EvidenceFields({
               <span className="fd-field-value">{fieldValue(field)}</span>
               {(confirmed || extracted.value) && (
                 <small className="fd-chip">
-                  {t(confirmed ? 'work.field.manual' : 'work.field.ai')}
+                  {t(
+                    confirmed
+                      ? 'work.field.manual'
+                      : draft.extractionSource === 'ai'
+                        ? 'work.field.ai'
+                        : 'work.field.local'
+                  )}
                 </small>
               )}
             </>

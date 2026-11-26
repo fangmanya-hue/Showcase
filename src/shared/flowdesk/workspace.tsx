@@ -114,7 +114,8 @@ function Intake({ state, change }: Props) {
     router = useRouter(),
     [addingLine, setAddingLine] = useState(false),
     [newLine, setNewLine] = useState(''),
-    [lineNotice, setLineNotice] = useState('');
+    [lineNotice, setLineNotice] = useState(''),
+    [extracting, setExtracting] = useState(false);
   const customLines = state.customLines ?? [];
   function addLine() {
     const name = newLine.trim();
@@ -135,22 +136,54 @@ function Intake({ state, change }: Props) {
     setLineNotice(t('intake.form.lineAdded', { name }));
     setAddingLine(false);
   }
+  async function generateDrafts() {
+    setExtracting(true);
+    try {
+      const response = await fetch('/api/flowdesk/extract', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          raw: state.input,
+          line: state.line,
+          reference: state.reference,
+          context: state.context,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok || !Array.isArray(result.drafts)) {
+        throw new Error(result.error || 'ai_unavailable');
+      }
+      change({
+        ...state,
+        drafts: result.drafts,
+        analysis: result.analysis,
+        lastExtraction: { source: 'ai', at: new Date().toISOString() },
+      });
+      router.push(paths.review);
+    } catch {
+      change({
+        ...state,
+        drafts: extract(
+          state.input,
+          state.line,
+          state.reference,
+          state.context
+        ),
+        analysis: undefined,
+        lastExtraction: { source: 'rule', at: new Date().toISOString() },
+      });
+      router.push(paths.review);
+    } finally {
+      setExtracting(false);
+    }
+  }
   return (
     <form
       className="fd-card fd-intake-form"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        if (!state.input.trim()) return;
-        change({
-          ...state,
-          drafts: extract(
-            state.input,
-            state.line,
-            state.reference,
-            state.context
-          ),
-        });
-        router.push(paths.review);
+        if (!state.input.trim() || extracting) return;
+        await generateDrafts();
       }}
     >
       <div className="fd-intake-lead">
@@ -270,8 +303,8 @@ function Intake({ state, change }: Props) {
       </details>
 
       <div className="fd-actions">
-        <button className="fd-btn" disabled={!state.input.trim()}>
-          {t('intake.form.submit')}
+        <button className="fd-btn" disabled={!state.input.trim() || extracting}>
+          {t(extracting ? 'intake.form.analyzing' : 'intake.form.submit')}
         </button>
         <button
           type="button"
@@ -282,6 +315,7 @@ function Intake({ state, change }: Props) {
               context: sampleRequirement,
               input: sampleText,
               reference: sourceDate,
+              analysis: undefined,
             })
           }
         >
@@ -301,10 +335,64 @@ function Review({ state, change }: Props) {
   return (
     <>
       <p>{t('review.page.intro')}</p>
+      <p className="fd-extraction-status">
+        {t(
+          state.lastExtraction?.source === 'ai'
+            ? 'review.analysis.ai'
+            : 'review.analysis.rule'
+        )}
+      </p>
       {state.context && (
         <section className="fd-context-card">
           <small>{t('review.page.context')}</small>
           <p>{state.context}</p>
+        </section>
+      )}
+      {state.analysis && (
+        <section
+          className="fd-analysis-card"
+          aria-label={t('review.analysis.title')}
+        >
+          <div className="fd-analysis-head">
+            <div>
+              <small>{t('review.analysis.title')}</small>
+              <strong>{state.analysis.summary}</strong>
+            </div>
+            {state.analysis.sourceName && (
+              <span className="fd-chip">{state.analysis.sourceName}</span>
+            )}
+          </div>
+          {!!state.analysis.participants.length && (
+            <p className="fd-analysis-participants">
+              <span>{t('review.analysis.participants')}</span>
+              {state.analysis.participants.join('、')}
+            </p>
+          )}
+          <div className="fd-analysis-grid">
+            {(
+              [
+                ['decisions', state.analysis.decisions],
+                ['constraints', state.analysis.constraints],
+                ['openQuestions', state.analysis.openQuestions],
+              ] as const
+            ).map(([key, insights]) => (
+              <div key={key}>
+                <strong>{t('review.analysis.' + key)}</strong>
+                {insights.length ? (
+                  <ul>
+                    {insights.map((insight, index) => (
+                      <li key={index}>
+                        <span>{insight.text}</span>
+                        {insight.evidence && <small>{insight.evidence}</small>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>{t('review.analysis.none')}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </section>
       )}
       <section className="fd-review-stats" aria-label={t('review.page.checks')}>
@@ -400,6 +488,7 @@ function ReviewCard({
     setConfirm('');
   }
   const lineCandidates = people.filter((person) => person.dept === d.line);
+  const suggestedOwner = d.values.owner.value.trim();
   const candidates =
     d.match.status === 'ambiguous'
       ? people.filter((person) => d.match.ids.includes(person.id))
@@ -449,6 +538,13 @@ function ReviewCard({
                   onFocus={() => setActiveField('owner')}
                 >
                   <option value="">{t('work.field.choose')}</option>
+                  {suggestedOwner && d.match.status !== 'matched' && (
+                    <option value={suggestedOwner}>
+                      {t('review.choice.confirmSuggestedOwner', {
+                        name: suggestedOwner,
+                      })}
+                    </option>
+                  )}
                   {candidates.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.name} · {p.dept} · {p.id}
@@ -675,7 +771,11 @@ function ActionList({ state }: { state: Workspace }) {
                   <Link href={'/items/' + i.id}>{value(i, 'title')}</Link>
                 </td>
                 <td>{i.line}</td>
-                <td>{people.find((p) => p.id === ownerId(i))?.name}</td>
+                <td>
+                  {people.find((p) => p.id === ownerId(i))?.name ||
+                    ownerId(i) ||
+                    t('work.field.empty')}
+                </td>
                 <td>{dueDate(i)}</td>
                 <td>
                   <span className="fd-chip">

@@ -17,6 +17,16 @@
     "draftPanel": "事项草稿",
     "clickField": "字段与原文联动"
   },
+  "analysis": {
+    "title": "群聊解析概览",
+    "ai": "已使用 AI 跨消息理解；日期、匹配和逾期仍由程序规则校验。",
+    "rule": "AI 暂时不可用，本批草稿由本地规则生成。",
+    "participants": "涉及人员与范围",
+    "decisions": "已形成结论",
+    "constraints": "限制与执行规则",
+    "openQuestions": "待回答问题",
+    "none": "原文未识别到相关信息。"
+  },
   "issue": {
     "title": "缺事项标题。请对照原文填写。",
     "missing": "缺负责人。原文没有指定由谁负责。",
@@ -31,6 +41,7 @@
     "separate": "已核对，保留为独立事项",
     "target": "合并目标",
     "ruleRange": "日期范围 {start} 至 {end}",
-    "noDate": "无法确定日期"
+    "noDate": "无法确定日期",
+    "confirmSuggestedOwner": "确认原文中的 {name} 为负责人"
   }
 }

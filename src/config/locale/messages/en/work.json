@@ -7,7 +7,7 @@
     "label": "Workspace navigation"
   },
   "demo": {
-    "note": "Local demo · Changes stay in this browser tab. People are redacted; business lines follow public organization names.",
+    "note": "AI drafts · Saved only after review. Current data stays in this browser tab; people are redacted.",
     "loading": "Loading your local workspace…",
     "storage": "Browser storage is unavailable. Refreshing may lose your changes."
   },
@@ -29,7 +29,8 @@
     "evidence": "Source evidence",
     "noEvidence": "This field has no supporting text.",
     "manual": "Confirmed value",
-    "ai": "AI extraction (sample)",
+    "ai": "AI extraction",
+    "local": "Local rule extraction",
     "rule": "Rule result",
     "userAction": "User-confirmed action",
     "pendingConfirm": "Current user to confirm",
