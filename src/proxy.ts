@@ -19,12 +19,20 @@ export async function proxy(request: NextRequest) {
     ? pathname.slice(locale.length + 1)
     : pathname;
 
-  // Only check authentication for admin routes
-  if (
+  const isFlowDeskWorkspaceRoute =
+    pathWithoutLocale === '/intake' ||
+    pathWithoutLocale === '/review' ||
+    pathWithoutLocale === '/items' ||
+    pathWithoutLocale.startsWith('/items/');
+
+  const requiresSession =
+    isFlowDeskWorkspaceRoute ||
     pathWithoutLocale.startsWith('/admin') ||
     pathWithoutLocale.startsWith('/settings') ||
-    pathWithoutLocale.startsWith('/activity')
-  ) {
+    pathWithoutLocale.startsWith('/activity');
+
+  // FlowDesk workspace, settings and administrative surfaces require a session.
+  if (requiresSession) {
     // Check if session cookie exists
     const sessionCookie = getSessionCookie(request);
 
@@ -53,9 +61,7 @@ export async function proxy(request: NextRequest) {
   // Remove Set-Cookie from public pages to allow caching
   // We exclude admin, settings, activity, and auth pages from this behavior
   if (
-    !pathWithoutLocale.startsWith('/admin') &&
-    !pathWithoutLocale.startsWith('/settings') &&
-    !pathWithoutLocale.startsWith('/activity') &&
+    !requiresSession &&
     !pathWithoutLocale.startsWith('/sign-') &&
     !pathWithoutLocale.startsWith('/auth')
   ) {
@@ -67,6 +73,8 @@ export async function proxy(request: NextRequest) {
     intlResponse.headers.set('Cache-Control', cacheControl);
     intlResponse.headers.set('CDN-Cache-Control', cacheControl);
     intlResponse.headers.set('Cloudflare-CDN-Cache-Control', cacheControl);
+  } else if (requiresSession) {
+    intlResponse.headers.set('Cache-Control', 'private, no-store');
   }
 
   // For all other routes (including /, /sign-in, /sign-up, /sign-out), just return the intl response

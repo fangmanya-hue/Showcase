@@ -7,6 +7,9 @@
   "sign": {
     "sign_in_title": "Sign In",
     "sign_in_description": "Sign in to your account",
+    "google_sign_in_description": "Continue to the FlowDesk workspace with Google",
+    "google_unavailable_title": "Google sign-in is not configured yet",
+    "google_unavailable_description": "Check GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_AUTH_ENABLED in Vercel, then redeploy.",
     "sign_up_title": "Sign Up",
     "sign_up_description": "Create an account",
     "email_title": "Email",

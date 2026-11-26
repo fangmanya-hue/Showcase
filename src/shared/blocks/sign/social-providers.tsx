@@ -17,11 +17,13 @@ export function SocialProviders({
   callbackUrl,
   loading,
   setLoading,
+  googleOnly = false,
 }: {
   configs: Record<string, string>;
   callbackUrl: string;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  googleOnly?: boolean;
 }) {
   const t = useTranslations('common.sign');
   const router = useRouter();
@@ -75,7 +77,7 @@ export function SocialProviders({
     });
   }
 
-  if (configs.github_auth_enabled === 'true') {
+  if (!googleOnly && configs.github_auth_enabled === 'true') {
     providers.push({
       name: 'github',
       title: t('github_sign_in_title'),
@@ -95,7 +97,7 @@ export function SocialProviders({
         <Button
           key={provider.name}
           type="button"
-          variant="outline"
+          variant={googleOnly ? 'default' : 'outline'}
           className={cn('w-full gap-2')}
           disabled={loading}
           onClick={provider.onClick}

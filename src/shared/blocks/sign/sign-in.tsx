@@ -26,10 +26,12 @@ export function SignIn({
   configs,
   callbackUrl = '/',
   defaultEmail = '',
+  googleOnly = false,
 }: {
   configs: Record<string, string>;
   callbackUrl: string;
   defaultEmail?: string;
+  googleOnly?: boolean;
 }) {
   const router = useRouter();
   const locale = useLocale();
@@ -42,8 +44,10 @@ export function SignIn({
   const isGoogleAuthEnabled = configs.google_auth_enabled === 'true';
   const isGithubAuthEnabled = configs.github_auth_enabled === 'true';
   const isEmailAuthEnabled =
-    configs.email_auth_enabled !== 'false' ||
-    (!isGoogleAuthEnabled && !isGithubAuthEnabled); // no social providers enabled, auto enable email auth
+    !googleOnly &&
+    (configs.email_auth_enabled !== 'false' ||
+      (!isGoogleAuthEnabled && !isGithubAuthEnabled));
+  const isGoogleUnavailable = googleOnly && !isGoogleAuthEnabled;
 
   if (callbackUrl) {
     if (
@@ -136,7 +140,11 @@ export function SignIn({
           <h1>{t('sign_in_title')}</h1>
         </CardTitle>
         <CardDescription className="text-xs md:text-sm">
-          <h2>{t('sign_in_description')}</h2>
+          <h2>
+            {googleOnly
+              ? t('google_sign_in_description')
+              : t('sign_in_description')}
+          </h2>
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -209,7 +217,21 @@ export function SignIn({
             callbackUrl={callbackUrl || '/'}
             loading={loading}
             setLoading={setLoading}
+            googleOnly={googleOnly}
           />
+          {isGoogleUnavailable && (
+            <div
+              role="alert"
+              className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-left text-amber-950"
+            >
+              <p className="text-sm font-medium">
+                {t('google_unavailable_title')}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-amber-900">
+                {t('google_unavailable_description')}
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
       {isEmailAuthEnabled && (

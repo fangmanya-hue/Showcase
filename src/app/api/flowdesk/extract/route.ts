@@ -6,6 +6,7 @@ import {
   needsCoverageReview,
   parseAIExtraction,
 } from '@/shared/flowdesk/ai';
+import { getSignUser } from '@/shared/models/user';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -108,6 +109,14 @@ async function extractWithFallback(input: {
 
 export async function POST(request: Request) {
   try {
+    const user = await getSignUser();
+    if (!user) {
+      return Response.json(
+        { ok: false, error: 'authentication_required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const raw = typeof body.raw === 'string' ? body.raw.trim() : '';
     const reference =
