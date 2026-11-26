@@ -3,6 +3,7 @@ import { revalidateTag, unstable_cache } from 'next/cache';
 import { db } from '@/core/db';
 import { envConfigs } from '@/config';
 import { config } from '@/config/db/schema';
+import { isValidGoogleClientId } from '@/shared/lib/google-auth';
 import {
   getAllSettingNames,
   publicSettingNames,
@@ -103,6 +104,18 @@ export async function getAllConfigs(): Promise<Configs> {
     ...envConfigs,
     ...dbConfigs,
   };
+
+  // Never expose or initialize a Google provider with a truncated client ID.
+  // This turns a broken 401 redirect into a disabled sign-in option until the
+  // deployment configuration is corrected.
+  if (
+    configs.google_client_id &&
+    !isValidGoogleClientId(configs.google_client_id)
+  ) {
+    configs.google_client_id = '';
+    configs.google_auth_enabled = 'false';
+    configs.google_one_tap_enabled = 'false';
+  }
 
   return configs;
 }

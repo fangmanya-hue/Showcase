@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { PanelsTopLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@/core/i18n/navigation';
@@ -9,6 +8,7 @@ import { ThemeToggler } from '@/shared/blocks/common/theme-toggler';
 import { SignUser } from '@/shared/blocks/sign/sign-user';
 
 import { LanguageSwitch } from './switch';
+import { FlowDeskMark } from './visuals';
 
 import './flowdesk.css';
 
@@ -27,7 +27,7 @@ export async function FlowdeskShell({ children }: { children: ReactNode }) {
         <div className="fd-wrap fd-header-inner">
           <Link href="/" className="fd-brand">
             <span className="fd-mark">
-              <PanelsTopLeft size={20} />
+              <FlowDeskMark />
             </span>
             {t('brand.name')}
           </Link>

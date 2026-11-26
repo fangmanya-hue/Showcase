@@ -152,9 +152,7 @@
   font-size: 0.91rem;
 }
 .fd-hero {
-  background:
-    radial-gradient(ellipse at 88% 35%, #2688ff0c 0%, transparent 58%),
-    var(--base);
+  background: var(--base);
 }
 .fd-hero-grid {
   display: grid;
@@ -417,8 +415,7 @@
 }
 .fd-preview-body {
   padding: 20px 22px 22px;
-  background-image: radial-gradient(#57729175 0.8px, transparent 0.8px);
-  background-size: 13px 13px;
+  background: #203b5c;
 }
 .fd-preview-label {
   color: #c0d7f4;
@@ -1063,9 +1060,7 @@
 }
 .fd-hero {
   min-height: calc(100svh - 76px);
-  background:
-    radial-gradient(circle at 82% 20%, #dceaff 0, transparent 34%),
-    linear-gradient(180deg, #ffffff 0%, #f7f9fb 100%);
+  background: #f7f9fb;
   overflow: hidden;
 }
 .dark .fd-hero {
@@ -2040,5 +2035,383 @@
   }
   .fd-history time {
     grid-column: 1 / -1;
+  }
+}
+
+/* Brand geometry: one routed-line language across the public product story. */
+.fd-mark {
+  color: #145ce5;
+  background: transparent;
+}
+.fd-mark svg {
+  width: 33px;
+  height: 33px;
+}
+.fd-hero {
+  background: #f7f9fc;
+}
+.fd-system-preview {
+  position: relative;
+  isolation: isolate;
+  background: #eef3f8;
+  box-shadow: 0 26px 70px rgba(24, 43, 64, 0.12);
+}
+.fd-system-preview::after {
+  position: absolute;
+  z-index: -1;
+  right: -1px;
+  bottom: -1px;
+  width: 38%;
+  height: 44%;
+  border: 1px solid rgba(28, 100, 242, 0.12);
+  border-radius: 16px 0 0;
+  content: '';
+}
+.fd-hero-routes {
+  position: absolute;
+  z-index: -1;
+  inset: 42px -30px 12px;
+  width: calc(100% + 60px);
+  height: calc(100% - 54px);
+  color: #7aa8f7;
+  opacity: 0.34;
+  pointer-events: none;
+}
+.fd-route {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+.fd-route-soft {
+  stroke-width: 1.25;
+  opacity: 0.7;
+}
+.fd-route-active {
+  stroke-width: 1.8;
+}
+.fd-route-node {
+  fill: #fff;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+.fd-route-pulse {
+  fill: currentColor;
+}
+.fd-system-flow,
+.fd-system-head,
+.fd-system-foot {
+  position: relative;
+  z-index: 1;
+}
+.fd-system-flow {
+  background: rgba(238, 243, 248, 0.78);
+}
+
+.fd-problem-path {
+  display: block;
+  margin-top: 30px;
+}
+.fd-problem-path > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  color: var(--ink);
+}
+.fd-problem-stages {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.fd-problem-stages span:nth-child(2) {
+  text-align: center;
+}
+.fd-problem-stages span:last-child {
+  text-align: right;
+}
+.fd-svg-muted {
+  color: #a7b5c2;
+}
+.fd-svg-accent {
+  color: #2c6fe8;
+}
+.fd-svg-ink {
+  color: #172c40;
+}
+
+.fd-step-head {
+  align-items: flex-start;
+}
+.fd-step-head > svg {
+  width: 120px;
+  height: 76px;
+  color: #8db6ff;
+}
+.fd-glyph-frame {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: rgba(174, 202, 242, 0.42);
+  stroke-width: 1.3;
+}
+.fd-glyph-line,
+.fd-glyph-accent {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.fd-glyph-accent {
+  stroke: #fff;
+}
+.fd-glyph-dot {
+  fill: #8db6ff;
+}
+
+.fd-feature-grid article,
+.fd-feature-grid .fd-feature-primary {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: 30px;
+  min-height: 270px;
+  padding: 32px;
+  background: transparent;
+}
+.fd-feature-grid .fd-feature-primary {
+  background: #f1f5fa;
+}
+.fd-feature-grid article:hover,
+.fd-feature-grid .fd-feature-primary:hover {
+  background: #fff;
+}
+.fd-feature-visual,
+.fd-feature-grid svg.fd-feature-visual {
+  width: 100%;
+  height: auto;
+  color: var(--blue);
+  transition: transform 180ms ease-out;
+}
+.fd-feature-grid article:hover .fd-feature-visual {
+  transform: translateY(-2px);
+}
+.fd-feature-frame {
+  fill: #f7f9fc;
+  stroke: #cfdae5;
+  stroke-width: 1.2;
+}
+.fd-feature-paper {
+  fill: #fff;
+  stroke: #d5dee8;
+  stroke-width: 1.2;
+}
+.fd-feature-stroke,
+.fd-feature-accent {
+  fill: none;
+  stroke: #8c9dac;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.fd-feature-accent {
+  stroke: #2368df;
+  stroke-width: 2.4;
+}
+.fd-feature-node {
+  fill: #e3edff;
+  stroke: #4b82e4;
+  stroke-width: 1.4;
+}
+.fd-feature-highlight {
+  fill: #dfeaff;
+}
+
+.fd-trust-copy {
+  grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 64px);
+}
+.fd-trust-copy > svg {
+  width: 100%;
+  height: auto;
+  color: #172c40;
+}
+.fd-trust-copy > div {
+  display: grid;
+  gap: 18px;
+}
+.fd-trust-copy > div > svg {
+  width: 30px;
+  color: #1c64f2;
+}
+.fd-ledger-sheet {
+  fill: rgba(255, 255, 255, 0.72);
+  stroke: rgba(43, 83, 132, 0.22);
+  stroke-width: 1.2;
+}
+.fd-ledger-line {
+  fill: none;
+  stroke: rgba(43, 83, 132, 0.16);
+}
+.fd-ledger-ai {
+  fill: #dce8ff;
+  stroke: #3776e5;
+}
+.fd-ledger-rule {
+  fill: #dff3ec;
+  stroke: #3b8b72;
+}
+.fd-ledger-human {
+  fill: #fff0ce;
+  stroke: #b9811e;
+}
+.fd-ledger-copy {
+  fill: none;
+  stroke: #5f7388;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+.fd-ledger-check {
+  fill: none;
+  stroke: #1f6ee9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+/* Intake: the source text is the work surface; optional controls stay secondary. */
+.fd-intake-form {
+  max-width: 1040px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(21, 43, 67, 0.07);
+}
+.fd-intake-lead {
+  margin: 0;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+  background: #f8fafc;
+}
+.fd-message-field {
+  padding: 24px 24px 0;
+}
+.fd-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.fd-input-kind {
+  padding: 3px 8px;
+  border: 1px solid #cfd9e3;
+  border-radius: 6px;
+  color: #647484;
+  background: #f6f8fa;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.fd-input-kind--formal {
+  border-color: #a9c7f8;
+  color: #1f5cae;
+  background: #edf4ff;
+}
+.fd-intake-form > .fd-message-field > .fd-message-input {
+  min-height: 330px;
+  margin-top: 10px;
+  padding: 18px 20px;
+  color: var(--ink);
+  background: #fff;
+  line-height: 1.85;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+.fd-intake-form > .fd-message-field > .fd-message-input--example {
+  color: #667789;
+  background: #f7f9fb;
+}
+.fd-intake-form > .fd-message-field > .fd-message-input--formal {
+  border-color: #8eb4f3;
+  box-shadow: inset 0 0 0 1px rgba(28, 100, 242, 0.08);
+}
+.fd-intake-form > small,
+.fd-intake-form > p {
+  display: block;
+  padding-inline: 24px;
+}
+.fd-options {
+  margin-inline: 24px;
+}
+.fd-intake-form > .fd-actions {
+  margin-top: 0;
+  padding: 24px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fd-route-pulse circle {
+    animation: fd-route-pulse 3.2s ease-in-out infinite;
+  }
+  .fd-route-pulse circle:nth-child(2) {
+    animation-delay: 0.35s;
+  }
+  .fd-route-pulse circle:nth-child(3) {
+    animation-delay: 0.7s;
+  }
+  @keyframes fd-route-pulse {
+    50% {
+      opacity: 0.25;
+      transform: translateX(8px);
+    }
+  }
+}
+
+@media (max-width: 1020px) {
+  .fd-feature-grid article,
+  .fd-feature-grid .fd-feature-primary {
+    grid-template-columns: minmax(180px, 0.7fr) 1.3fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .fd-hero-routes {
+    display: none;
+  }
+  .fd-step-head > svg {
+    width: 108px;
+  }
+  .fd-feature-grid article,
+  .fd-feature-grid .fd-feature-primary {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 28px 0;
+  }
+  .fd-feature-grid .fd-feature-primary {
+    padding-inline: 20px;
+  }
+  .fd-feature-visual {
+    max-height: 180px;
+  }
+  .fd-trust-copy {
+    grid-template-columns: 1fr;
+  }
+  .fd-message-field {
+    padding: 20px 18px 0;
+  }
+  .fd-intake-lead {
+    padding: 18px;
+  }
+  .fd-intake-form > small,
+  .fd-intake-form > p {
+    padding-inline: 18px;
+  }
+  .fd-options {
+    margin-inline: 18px;
+  }
+  .fd-intake-form > .fd-actions {
+    padding: 20px 18px;
   }
 }

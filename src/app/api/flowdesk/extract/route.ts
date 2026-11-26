@@ -1,7 +1,9 @@
 import {
+  buildCoverageReviewRequest,
   buildExtractionRequest,
   draftsFromAI,
   FLOWDESK_EXTRACTION_PROMPT,
+  needsCoverageReview,
   parseAIExtraction,
 } from '@/shared/flowdesk/ai';
 
@@ -10,7 +12,8 @@ export const maxDuration = 60;
 
 const defaultBaseUrl = 'https://direct.evolink.ai';
 const fallbackBaseUrl = 'https://api.evolink.ai';
-const defaultModel = 'deepseek-v4.1-flash-1017';
+const defaultModel = 'deepseek-v4-pro';
+const defaultReviewModel = 'deepseek-v4-pro';
 const maxInputLength = 50_000;
 
 type CompletionResponse = {
@@ -133,13 +136,36 @@ export async function POST(request: Request) {
     }
     const model = process.env.FLOWDESK_AI_MODEL?.trim() || defaultModel;
     const baseUrl = process.env.FLOWDESK_AI_BASE_URL?.trim() || defaultBaseUrl;
-    const result = await extractWithFallback({
+    let result = await extractWithFallback({
       apiKey,
       model,
       baseUrl,
       userPrompt: buildExtractionRequest({ raw, reference, line, context }),
     });
-    const extraction = parseAIExtraction(result.content);
+    let extraction = parseAIExtraction(result.content);
+    let modelUsed = model;
+    let passes = 1;
+
+    if (needsCoverageReview(raw, extraction)) {
+      const reviewModel =
+        process.env.FLOWDESK_AI_REVIEW_MODEL?.trim() || defaultReviewModel;
+      const reviewed = await extractWithFallback({
+        apiKey,
+        model: reviewModel,
+        baseUrl,
+        userPrompt: buildCoverageReviewRequest(
+          { raw, reference, line, context },
+          result.content
+        ),
+      });
+      const reviewedExtraction = parseAIExtraction(reviewed.content);
+      passes = 2;
+      if (reviewedExtraction.actions.length > extraction.actions.length) {
+        extraction = reviewedExtraction;
+        result = reviewed;
+        modelUsed = reviewModel;
+      }
+    }
     const mapped = draftsFromAI({
       raw,
       reference,
@@ -158,7 +184,8 @@ export async function POST(request: Request) {
       ok: true,
       ...mapped,
       meta: {
-        model,
+        model: modelUsed,
+        passes,
         usage: result.usage ?? null,
       },
     });

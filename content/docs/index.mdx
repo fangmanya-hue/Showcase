@@ -1,15 +1,147 @@
 ---
 title: FlowDesk guide
+description: Learn the full path from raw team chat to reviewed, trackable actions.
 ---
 
-## Capture a conversation
+FlowDesk turns unedited team conversations into action drafts. You do not need to split messages, assign owners, or rewrite dates first. The system organizes the thread and sends uncertainty to review.
 
-Open [Intake](/en/intake), paste redacted messages and leave a blank line between actions. Choose the business line and message date, then generate drafts. The demo extracts supported fields in your browser.
+<div
+  className="fd-guide-flow"
+  role="img"
+  aria-label="A conversation moves through extraction and review into a tracked action list"
+>
+  <svg viewBox="0 0 760 210" aria-hidden="true">
+    <path className="guide-path" d="M116 105h122M300 105h122M484 105h122" />
+    <g className="guide-node">
+      <rect x="26" y="44" width="180" height="122" rx="16" />
+      <path d="M56 75h92M56 101h120M56 127h76" />
+    </g>
+    <g className="guide-node">
+      <rect x="210" y="44" width="180" height="122" rx="16" />
+      <path d="M240 75h120M240 101h72M240 127h96" />
+      <circle cx="350" cy="127" r="10" />
+    </g>
+    <g className="guide-node">
+      <rect x="394" y="44" width="180" height="122" rx="16" />
+      <path d="M424 75h112M424 101h84M424 127h104" />
+      <path className="guide-check" d="m524 126 8 8 15-19" />
+    </g>
+    <g className="guide-node">
+      <rect x="578" y="44" width="156" height="122" rx="16" />
+      <path d="M608 75h96M608 101h72M608 127h88" />
+    </g>
+  </svg>
+  <div className="fd-guide-flow-labels">
+    <span>Raw chat</span>
+    <span>AI extraction</span>
+    <span>Human review</span>
+    <span>Tracking</span>
+  </div>
+</div>
 
-## Review owners and dates
+## The shortest path
 
-Open [Review](/en/review) and expand a field to see the highlighted sentence. Select an owner when shorthand has multiple matches. Confirm a due date when the source only describes a range.
+<div className="fd-guide-steps">
+  <a href="/en/intake">
+    <strong>Paste the source</strong>
+    <span>Use the original thread. No cleanup is required.</span>
+  </a>
+  <a href="/en/review">
+    <strong>Review the draft</strong>
+    <span>Check owners, dates, contacts, and evidence.</span>
+  </a>
+  <a href="/en/items">
+    <strong>Save the action</strong>
+    <span>Confirm the draft, then track it by line and status.</span>
+  </a>
+</div>
 
-## Track an action
+## Capture a real conversation
 
-Filter the [action list](/en/items) by business line, owner, date or status. Open an action to see its messages and change history. Confirm merges and closures explicitly and undo the last change from the target action.
+Open [Intake](/en/intake), then add the request context and raw team chat. Live input uses dark text; loaded example copy stays gray so it cannot be mistaken for your own data.
+
+Paste timestamps, speakers, replies, and incomplete verbal agreements as they appear. Business line, message date, and special instructions stay under Additional settings until you need them.
+
+> Keep the original order. Who asked first, who answered later, and who committed to follow up all affect the result.
+
+## How FlowDesk reads the thread
+
+<div className="fd-guide-split">
+  <section>
+    <h3>FlowDesk organizes</h3>
+    <ul>
+      <li>Separates deliverables with different deadlines</li>
+      <li>Distinguishes owners, contacts, and participants</li>
+      <li>Keeps source evidence for every field</li>
+      <li>Collects decisions, constraints, and open questions</li>
+    </ul>
+  </section>
+  <section>
+    <h3>Your team decides</h3>
+    <ul>
+      <li>Missing owners are never guessed</li>
+      <li>A contact never becomes the owner automatically</li>
+      <li>Vague dates are not presented as exact</li>
+      <li>Merges, closures, and writes require confirmation</li>
+    </ul>
+  </section>
+</div>
+
+## What to review first
+
+Review keeps the full source on the left and the action draft on the right. Select a field to reveal the matching sentence without leaving the draft.
+
+| Check                    | What to confirm                                             | FlowDesk behavior                               |
+| ------------------------ | ----------------------------------------------------------- | ----------------------------------------------- |
+| Owner                    | A clear commitment or assignment exists                     | Leaves the field empty when evidence is missing |
+| Contact and participants | The person contacted may differ from the person responsible | Stores each role separately                     |
+| Due date                 | The source gives a date or only a range                     | AI keeps the source phrase; rules normalize it  |
+| Evidence                 | Every value links to a sentence                             | Opens the exact source fragment                 |
+| Duplicates and conflicts | A similar action already exists                             | Explains the warning and asks you to decide     |
+
+### Source labels
+
+<div className="fd-guide-legend">
+  <span className="is-ai">
+    <b>AI extracted</b>understood from conversation
+  </span>
+  <span className="is-rule">
+    <b>Rule calculated</b>normalized dates and overdue state
+  </span>
+  <span className="is-human">
+    <b>Human confirmed</b>explicitly selected or edited
+  </span>
+</div>
+
+## Complex conversation handling
+
+A meeting-planning thread can contain a proposed time, agenda deadline, material deadline, attendance reports, room capacity, and equipment checks. FlowDesk reads the thread in order: answered questions become decisions, unresolved questions remain open, and unfinished work becomes separate actions.
+
+“I’ll check the display adapters” can create an owned action. “How many interface owners are coming?” remains an open question when the thread contains no answer.
+
+## Track, close, and undo
+
+Filter the [action list](/en/items) by business line, owner, date, or status. Open an action to inspect its source message, field evidence, and change history.
+
+- Write: save a reviewed draft as an action.
+- Merge: choose the target after confirming a duplicate.
+- Close: require explicit completion or a manual confirmation.
+- Undo: reverse the latest merge or closure from the detail page.
+
+## Common questions
+
+### Why is the owner missing?
+
+The source may name only a contact or participant. Select an owner in review; FlowDesk does not substitute the speaker.
+
+### Why is the date a range?
+
+Phrases such as “this week” are not exact. FlowDesk shows the calculated range and asks you to confirm the final due date.
+
+### Why did a complex thread produce no actions?
+
+Keep speakers and message order in the pasted source. If the AI service is unavailable, FlowDesk shows local-rule results; retry later or complete the missing fields in review.
+
+### Are drafts written immediately?
+
+No. Every result enters review first and becomes an action only after confirmation.

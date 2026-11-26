@@ -28,7 +28,13 @@ const evidenceSchema = z
 
 const insightSchema = z.object({
   text: z.string(),
-  evidence: z.string().optional().default(''),
+  evidence: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .default('')
+    .transform((value) =>
+      Array.isArray(value) ? value.filter(Boolean).join('；') : value
+    ),
 });
 
 const extractionSchema = z.object({
@@ -75,6 +81,15 @@ const extractionSchema = z.object({
 
 export type AIExtraction = z.infer<typeof extractionSchema>;
 
+const actionSignalPatterns = [
+  /截止/g,
+  /需要/g,
+  /请[^。；\n]{0,24}(?:处理|完成|确认|提交|安排|跟进)/g,
+  /(?:我来|我负责|我确认|我跟进|我安排|我把)/g,
+  /(?:投票|收集|提交|报备|预约|预定|确认|跟进|接龙)/g,
+  /(?:定了|确认后|完成后|会后).{0,18}(?:再|要|需)/g,
+];
+
 export const FLOWDESK_EXTRACTION_PROMPT = `
 你是 FlowDesk 的企业协作事项分析器。你的任务不是总结聊天，而是从未经整理的群聊记录中识别“对话结束后仍需要有人推进、核对或交付”的协作事项，并输出严格 JSON。
 
@@ -90,6 +105,7 @@ export const FLOWDESK_EXTRACTION_PROMPT = `
    - participants：参与讨论、参会或被同步的人，不等同于 owner。
    - 发言人不自动等于 owner；群里提出需求的人也不自动等于 owner。
 5. 无法确定 owner 时返回空字符串，并把 owner 放入 needs_confirmation；禁止猜测。
+   缺少负责人或截止时间不是省略事项的理由：只要动作仍需推进，就生成事项并把缺失字段放入 needs_confirmation。
 6. due_text 必须复制原文日期短语，例如“11/27 18:00”“这周”“时间定了以后”，不要自行改写为日期。日期归一化由程序规则完成。
 7. priority 只在原文明确表达高/中/低或紧急程度时填写，否则留空。
 8. evidence 必须是原文中真实存在的连续文本片段。没有依据的字段返回空数组，禁止用解释代替引用。
@@ -141,6 +157,18 @@ export const FLOWDESK_EXTRACTION_PROMPT = `
 }
 `.trim();
 
+export function needsCoverageReview(raw: string, extraction: AIExtraction) {
+  const signalCount = actionSignalPatterns.reduce(
+    (count, pattern) => count + (raw.match(pattern)?.length ?? 0),
+    0
+  );
+  if (signalCount === 0) return false;
+  return (
+    extraction.actions.length === 0 ||
+    (signalCount >= 4 && extraction.actions.length < 3)
+  );
+}
+
 export function buildExtractionRequest(input: {
   raw: string;
   reference: string;
@@ -153,6 +181,36 @@ export function buildExtractionRequest(input: {
       default_business_line: input.line,
       additional_guidance: input.context || '',
       conversation: input.raw,
+    },
+    null,
+    2
+  );
+}
+
+export function buildCoverageReviewRequest(
+  input: {
+    raw: string;
+    reference: string;
+    line: string;
+    context?: string;
+  },
+  previousResult: string
+) {
+  return JSON.stringify(
+    {
+      task: '复核第一次抽取结果，补齐遗漏的待推进事项，并重新输出完整 JSON。',
+      review_rules: [
+        '原文出现截止时间，通常意味着有一个需要收集、提交或完成的交付物；即使负责人未明确，也必须生成事项。',
+        '“我来、我把、我确认下、时间定了再做”等尚未完成的承诺必须检查为事项。',
+        '会议时间、地点、参会范围等已确定信息放入 decisions；对话结束时仍未回答的问题放入 open_questions。',
+        '不要只输出 conversation；actions 必须覆盖对话结束后仍需推进的动作。',
+        '负责人或截止时间不明确时留空并加入 needs_confirmation，禁止因此省略事项。',
+      ],
+      reference_date: input.reference,
+      default_business_line: input.line,
+      additional_guidance: input.context || '',
+      conversation: input.raw,
+      first_result: previousResult,
     },
     null,
     2
@@ -181,7 +239,13 @@ function parseJsonObject(content: string): unknown {
 export function parseAIExtraction(content: string): AIExtraction {
   const parsed = extractionSchema.safeParse(parseJsonObject(content));
   if (!parsed.success) {
-    throw new Error('AI response does not match the FlowDesk schema');
+    const issues = parsed.error.issues
+      .slice(0, 4)
+      .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+      .join('; ');
+    throw new Error(
+      `AI response does not match the FlowDesk schema${issues ? ` (${issues})` : ''}`
+    );
   }
   return parsed.data;
 }

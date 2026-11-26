@@ -1,39 +1,36 @@
 import {
   ArrowRight,
-  BrainCircuit,
-  CalendarClock,
   CheckCircle2,
-  ClipboardCheck,
-  FileSearch2,
-  FolderKanban,
-  History,
-  ListChecks,
   MessageSquareText,
   ScanLine,
   ShieldCheck,
-  UserRoundCheck,
 } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@/core/i18n/navigation';
 import { flowdeskPaths as paths } from '@/config/flowdesk';
 
+import {
+  FeatureDiagram,
+  HeroRouteMap,
+  ProblemDiagram,
+  TrustLedger,
+  WorkflowGlyph,
+  type FeatureVisual,
+  type WorkflowVisual,
+} from './visuals';
+
 export async function FlowdeskHome() {
   const t = await getTranslations('home');
-  const steps = [
-    ['intake', MessageSquareText],
-    ['review', ScanLine],
-    ['list', FolderKanban],
-    ['detail', History],
-  ] as const;
+  const steps: WorkflowVisual[] = ['intake', 'review', 'list', 'detail'];
   const features = [
-    ['context', BrainCircuit],
-    ['extract', ListChecks],
-    ['evidence', FileSearch2],
-    ['match', UserRoundCheck],
-    ['rules', CalendarClock],
-    ['track', ClipboardCheck],
-  ] as const;
+    'context',
+    'extract',
+    'evidence',
+    'match',
+    'rules',
+    'track',
+  ] satisfies FeatureVisual[];
   const principles = ['evidence', 'missing', 'confirm'] as const;
   return (
     <main className="fd-home">
@@ -62,6 +59,7 @@ export async function FlowdeskHome() {
               </p>
             </div>
             <aside className="fd-system-preview" aria-label={t('visual.label')}>
+              <HeroRouteMap className="fd-hero-routes" />
               <div className="fd-system-head">
                 <div>
                   <span className="fd-status-dot" />
@@ -74,7 +72,7 @@ export async function FlowdeskHome() {
                   <p>{t('visual.source')}</p>
                   <div className="fd-source-row">
                     <span className="fd-source-icon">
-                      <BrainCircuit />
+                      <ScanLine />
                     </span>
                     <span>
                       <strong>{t('visual.requirement')}</strong>
@@ -147,11 +145,12 @@ export async function FlowdeskHome() {
           <div>
             <p className="fd-paragraph">{t('problem.body')}</p>
             <div className="fd-problem-path" aria-hidden="true">
-              <span>{t('visual.conversation')}</span>
-              <ArrowRight />
-              <span>{t('visual.draft')}</span>
-              <ArrowRight />
-              <span>{t('visual.confirm')}</span>
+              <ProblemDiagram />
+              <div className="fd-problem-stages">
+                <span>{t('visual.conversation')}</span>
+                <span>{t('visual.draft')}</span>
+                <span>{t('visual.confirm')}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -164,11 +163,11 @@ export async function FlowdeskHome() {
             <span>{t('workflow.label')}</span>
           </div>
           <div className="fd-steps">
-            {steps.map(([key, Icon], index) => (
+            {steps.map((key, index) => (
               <Link key={key} href={paths[key]}>
                 <div className="fd-step-head">
                   <span>{String(index + 1).padStart(2, '0')}</span>
-                  <Icon />
+                  <WorkflowGlyph kind={key} />
                 </div>
                 <div>
                   <h3>{t('workflow.' + key)}</h3>
@@ -190,14 +189,12 @@ export async function FlowdeskHome() {
           <p className="fd-section-intro">{t('features.intro')}</p>
         </div>
         <div className="fd-feature-grid">
-          {features.map(([key, Icon], index) => (
+          {features.map((key, index) => (
             <article
               key={key}
               className={index < 2 ? 'fd-feature-primary' : ''}
             >
-              <div className="fd-feature-icon">
-                <Icon />
-              </div>
+              <FeatureDiagram className="fd-feature-visual" kind={key} />
               <div>
                 <h3>{t('features.' + key)}</h3>
                 <p>{t('features.' + key + 'Text')}</p>
@@ -214,8 +211,11 @@ export async function FlowdeskHome() {
             <span>{t('trust.label')}</span>
           </div>
           <div className="fd-trust-copy">
-            <ShieldCheck />
-            <p>{t('trust.body')}</p>
+            <TrustLedger />
+            <div>
+              <ShieldCheck />
+              <p>{t('trust.body')}</p>
+            </div>
           </div>
         </div>
       </section>

@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import {
   draftsFromAI,
   FLOWDESK_EXTRACTION_PROMPT,
+  needsCoverageReview,
   parseAIExtraction,
 } from '../src/shared/flowdesk/ai';
 import {
@@ -27,6 +28,7 @@ import {
   undoAction,
   writeDraft,
 } from '../src/shared/flowdesk/model';
+import { isValidGoogleClientId } from '../src/shared/lib/google-auth';
 
 function schema(value: unknown, path = ''): string[] {
   if (!value || typeof value !== 'object') return [path];
@@ -56,6 +58,13 @@ for (const file of files) {
 }
 
 assert.equal(businessLines.length, 11);
+assert.equal(
+  isValidGoogleClientId(
+    '123456789012-exampleclientidentifier.apps.googleusercontent.com'
+  ),
+  true
+);
+assert.equal(isValidGoogleClientId('.apps.googleusercontent.com'), false);
 assert.deepEqual(
   businessLines.map((line) => line.short),
   [
@@ -251,6 +260,22 @@ assert.equal(
   true
 );
 assert.equal(aiMapped.analysis.openQuestions[0].text, '确认接口人人数');
+assert.equal(needsCoverageReview(complexChat, aiExtraction), true);
+assert.equal(
+  needsCoverageReview(
+    complexChat,
+    parseAIExtraction(
+      JSON.stringify({
+        conversation: {},
+        actions: Array.from({ length: 5 }, (_, index) => ({
+          title: `待办 ${index + 1}`,
+          evidence: {},
+        })),
+      })
+    )
+  ),
+  false
+);
 assert.match(FLOWDESK_EXTRACTION_PROMPT, /发言人不自动等于 owner/);
 assert.match(FLOWDESK_EXTRACTION_PROMPT, /秘书是 contact/);
 console.log(

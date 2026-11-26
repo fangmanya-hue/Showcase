@@ -117,6 +117,11 @@ function Intake({ state, change }: Props) {
     [lineNotice, setLineNotice] = useState(''),
     [extracting, setExtracting] = useState(false);
   const customLines = state.customLines ?? [];
+  const inputKind = !state.input.trim()
+    ? 'empty'
+    : state.input === sampleText
+      ? 'example'
+      : 'formal';
   function addLine() {
     const name = newLine.trim();
     if (!name) return;
@@ -190,9 +195,15 @@ function Intake({ state, change }: Props) {
         <p>{t('intake.form.intro')}</p>
         <span>{t('intake.form.defaultGoal')}</span>
       </div>
-      <label>
-        {t('intake.form.message')}
+      <label className="fd-message-field">
+        <span className="fd-field-label-row">
+          <span>{t('intake.form.message')}</span>
+          <span className={`fd-input-kind fd-input-kind--${inputKind}`}>
+            {t(`intake.form.${inputKind}State`)}
+          </span>
+        </span>
         <textarea
+          className={`fd-message-input fd-message-input--${inputKind}`}
           required
           rows={14}
           placeholder={t('intake.form.messagePlaceholder')}
