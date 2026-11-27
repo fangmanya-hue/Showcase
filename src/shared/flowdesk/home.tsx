@@ -22,7 +22,6 @@ import {
 
 export async function FlowdeskHome() {
   const t = await getTranslations('home');
-  const startHref = '/sign-in?callbackUrl=%2Fintake';
   const steps: WorkflowVisual[] = ['intake', 'review', 'list', 'detail'];
   const features = [
     'context',
@@ -49,7 +48,7 @@ export async function FlowdeskHome() {
                 {t('hero.sub')}
               </p>
               <div className="fd-actions" data-enter="actions">
-                <Link className="fd-btn" href={startHref}>
+                <Link className="fd-btn" href={paths.intake}>
                   {t('hero.start')}
                   <ArrowRight />
                 </Link>
@@ -233,7 +232,7 @@ export async function FlowdeskHome() {
           <h2>{t('cta.title')}</h2>
           <p>{t('cta.text')}</p>
         </div>
-        <Link className="fd-btn" href={startHref}>
+        <Link className="fd-btn" href={paths.intake}>
           {t('cta.button')}
         </Link>
       </section>

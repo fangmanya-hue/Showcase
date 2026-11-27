@@ -7,6 +7,8 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/core/i18n/navigation';
 import { Button } from '@/shared/components/ui/button';
 
+const simulatedGoogleDelayMs = 5000;
+
 function GoogleMark() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0">
@@ -53,21 +55,30 @@ export function FakeGoogleSignInButton({
     timer.current = setTimeout(() => {
       const query = new URLSearchParams({ callbackUrl });
       router.push(`/sign-in-unavailable?${query.toString()}`);
-    }, 1000);
+    }, simulatedGoogleDelayMs);
   }
 
   return (
-    <Button
-      type="button"
-      size="lg"
-      className="h-12 w-full gap-3 rounded-xl text-base shadow-[0_8px_24px_rgba(30,99,219,0.2)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(30,99,219,0.25)]"
-      disabled={loading}
-      aria-live="polite"
-      onClick={beginFakeSignIn}
-    >
-      {loading ? <Loader2 className="size-5 animate-spin" /> : <GoogleMark />}
-      <span>{t(loading ? 'fake_connecting' : 'google_sign_in_title')}</span>
-    </Button>
+    <div>
+      <Button
+        type="button"
+        size="lg"
+        className="h-12 w-full gap-3 rounded-xl text-base shadow-[0_8px_24px_rgba(30,99,219,0.2)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(30,99,219,0.25)]"
+        disabled={loading}
+        aria-busy={loading}
+        onClick={beginFakeSignIn}
+      >
+        {loading ? <Loader2 className="size-5 animate-spin" /> : <GoogleMark />}
+        <span>{t(loading ? 'fake_connecting' : 'google_sign_in_title')}</span>
+      </Button>
+      <div className="min-h-7 pt-2 text-center" aria-live="polite">
+        {loading && (
+          <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+            {t('fake_wait_hint')}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 

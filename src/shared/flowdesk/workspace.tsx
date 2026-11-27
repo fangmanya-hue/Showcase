@@ -14,10 +14,8 @@ import {
   examples,
   people,
   previousSampleText,
-  sampleRequirement,
   sampleText,
   sampleWorkspaceVersion,
-  sourceDate,
 } from './fixtures';
 import { valueOnIntakeBlur, valueOnIntakeFocus } from './input-state';
 import {
@@ -242,20 +240,13 @@ function Intake({ state, change }: Props) {
           rows={14}
           placeholder={t('intake.form.messagePlaceholder')}
           value={state.input}
-          onFocus={(event) => {
-            if (!requireAuthentication()) {
-              event.currentTarget.blur();
-              return;
-            }
+          onFocus={() => {
             const input = valueOnIntakeFocus(state.input);
             if (input !== state.input) {
               change({ ...state, input });
             }
           }}
-          onChange={(event) => {
-            if (!requireAuthentication()) return;
-            change({ ...state, input: event.target.value });
-          }}
+          onChange={(event) => change({ ...state, input: event.target.value })}
           onBlur={() => {
             const input = valueOnIntakeBlur(state.input);
             if (input !== state.input) {
@@ -369,21 +360,6 @@ function Intake({ state, change }: Props) {
       <div className="fd-actions">
         <button className="fd-btn" disabled={!state.input.trim() || extracting}>
           {t(extracting ? 'intake.form.analyzing' : 'intake.form.submit')}
-        </button>
-        <button
-          type="button"
-          className="fd-link"
-          onClick={() =>
-            change({
-              ...state,
-              context: sampleRequirement,
-              input: sampleText,
-              reference: sourceDate,
-              analysis: undefined,
-            })
-          }
-        >
-          {t('intake.form.reset')}
         </button>
       </div>
     </form>

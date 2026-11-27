@@ -12,7 +12,6 @@
     "emptyState": "Ready for input",
     "messagePlaceholder": "Paste the raw chat. It can include multiple messages, numbering, and incomplete verbal agreements.",
     "reference": "Message date",
-    "reset": "Load sample text",
     "submit": "Analyze and create drafts",
     "analyzing": "Reading the conversation and separating actions…",
     "hint": "No cleanup required. FlowDesk separates actions, saves the source, and flags missing owners or dates.",

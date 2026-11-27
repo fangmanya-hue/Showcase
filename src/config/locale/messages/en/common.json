@@ -26,6 +26,7 @@
     "fake_title": "Continue with Google",
     "fake_description": "Sign in to organize your own conversations. The sample remains open to everyone.",
     "fake_connecting": "Connecting to Google…",
+    "fake_wait_hint": "Checking the network and authorization status. Keep this page open.",
     "unavailable_title": "Google sign-in is temporarily unavailable",
     "unavailable_description": "Google sign-in is temporarily unavailable because of the current network environment or third-party service restrictions.",
     "back_to_demo": "Return to the sample",
