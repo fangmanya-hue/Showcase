@@ -7,6 +7,7 @@ FlowDesk is an enterprise action workspace. The interface should feel precise, a
 ## Visual system
 
 - Use an ice-white and blue-grey working surface with deep navy text and one cobalt action color.
+- On the landing hero, build depth with a diffuse blue glow, a trace of pale violet, and a faint process grid that fades around the product window. These layers stay below 12% opacity and never compete with content.
 - Reserve dark navy for workflow sections that explain ordered movement through the product.
 - Use 10–16px radii for controls, product windows, and workspace cards. Data rows and process lanes use rules instead of nested cards.
 - Headings are compact, sentence case, and moderately weighted. Chinese UI uses the platform Chinese sans stack; body copy stays at 16px or above where it carries meaning.
@@ -23,7 +24,7 @@ FlowDesk is an enterprise action workspace. The interface should feel precise, a
 
 ## Interaction and accessibility
 
-- Keep one quiet motion signature: the product-engine status indicator breathes when reduced motion is not requested.
+- Keep one quiet motion signature: the landing promise, actions, and product window enter once in sequence. Do not use perpetual floating or pulsing motion.
 - Every interactive element has visible hover and keyboard focus states.
 - Body and secondary text must meet WCAG AA contrast. Warnings use a full amber border and explanatory text, never color alone.
 - Respect `prefers-reduced-motion`; do not hide content behind entrance animation.

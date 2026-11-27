@@ -38,13 +38,16 @@ export async function FlowdeskHome() {
         <div className="fd-wrap">
           <div className="fd-hero-grid">
             <div className="fd-hero-copy">
-              <h1>
-                {t('hero.lead')}
-                <br />
-                <em>{t('hero.title')}</em>
+              <h1 className="fd-hero-title" data-enter="title">
+                <span>{t('hero.lead')}</span>
+                <span className="fd-hero-title-emphasis">
+                  {t('hero.title')}
+                </span>
               </h1>
-              <p className="fd-lede">{t('hero.sub')}</p>
-              <div className="fd-actions">
+              <p className="fd-lede" data-enter="copy">
+                {t('hero.sub')}
+              </p>
+              <div className="fd-actions" data-enter="actions">
                 <Link className="fd-btn" href={paths.intake}>
                   {t('hero.start')}
                   <ArrowRight />
@@ -53,12 +56,16 @@ export async function FlowdeskHome() {
                   {t('hero.workflow')}
                 </Link>
               </div>
-              <p className="fd-hero-boundary">
+              <p className="fd-hero-boundary" data-enter="boundary">
                 <ShieldCheck />
                 {t('hero.boundary')}
               </p>
             </div>
-            <aside className="fd-system-preview" aria-label={t('visual.label')}>
+            <aside
+              className="fd-system-preview"
+              aria-label={t('visual.label')}
+              data-enter="product"
+            >
               <HeroRouteMap className="fd-hero-routes" />
               <div className="fd-system-head">
                 <div>
@@ -122,7 +129,7 @@ export async function FlowdeskHome() {
               </div>
             </aside>
           </div>
-          <div className="fd-principles">
+          <div className="fd-principles" data-enter="principles">
             {principles.map((key) => (
               <div key={key}>
                 <ShieldCheck />
