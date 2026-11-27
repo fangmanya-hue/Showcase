@@ -14,6 +14,7 @@ import {
   people,
   sampleRequirement,
   sampleText,
+  sampleWorkspaceVersion,
   sourceDate,
 } from './fixtures';
 import { valueOnIntakeBlur, valueOnIntakeFocus } from './input-state';
@@ -50,13 +51,15 @@ function useLocalWorkspace() {
         return;
       }
       const restored = JSON.parse(saved) as Workspace;
-      if (restored.input === legacySampleText) {
+      if (
+        restored.demoVersion !== sampleWorkspaceVersion &&
+        (restored.input === legacySampleText || restored.input === sampleText)
+      ) {
+        const current = initialWorkspace();
         const migrated = {
-          ...restored,
-          input: sampleText,
-          drafts: [],
-          analysis: undefined,
-          lastExtraction: undefined,
+          ...current,
+          line: restored.line || current.line,
+          customLines: restored.customLines ?? current.customLines,
         };
         sessionStorage.setItem(storageKey, JSON.stringify(migrated));
         setState(migrated);

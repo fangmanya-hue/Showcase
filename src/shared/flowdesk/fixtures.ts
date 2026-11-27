@@ -55,6 +55,27 @@ export const people = [
     short: ['小王'],
     aliases: [],
   },
+  {
+    id: '1101',
+    name: '张宁',
+    dept: '产品',
+    short: ['张'],
+    aliases: ['产品-张', '产品张'],
+  },
+  {
+    id: '1201',
+    name: '李楠',
+    dept: '运营',
+    short: ['李'],
+    aliases: ['运营-李', '运营李'],
+  },
+  {
+    id: '1301',
+    name: '王敏',
+    dept: '设计',
+    short: ['王'],
+    aliases: ['设计-王', '设计王'],
+  },
 ];
 export const departments = [...new Set(people.map((person) => person.dept))];
 export const sourceDate = '2026-11-23';
@@ -67,6 +88,7 @@ export const sampleMessages = [
   '今天 10:18\n产品-张：好的，辛苦了各位。大家记得把进度和最终文档地址更新在共享表里。',
 ];
 export const sampleText = ['群名:XXXX筹备群', ...sampleMessages].join('\n\n');
+export const sampleWorkspaceVersion = 2;
 
 // Stable rule fixtures keep the preloaded review/list states deterministic.
 // They are not shown as the intake example.
@@ -77,7 +99,7 @@ export const examples = [
 
 export const showcase = {
   title: '建立业务沟通会议程共享文档',
-  name: '待当前操作者确认',
+  name: '张宁（产品 · 工号 1101）',
   date: '2026-11-23',
   message: sampleMessages[0],
   evidence: '我下午建一个共享文档，把大纲放进去。',

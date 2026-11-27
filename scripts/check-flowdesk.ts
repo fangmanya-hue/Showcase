@@ -107,6 +107,9 @@ assert.deepEqual(matchOwner('计算义总秘书'), {
 assert.equal(matchOwner('HR-HR会务').via, 'alias');
 assert.equal(matchOwner('HR小王').status, 'ambiguous');
 assert.equal(matchOwner('HR小周').status, 'not_found');
+assert.equal(matchOwner('产品-张').ids[0], '1101');
+assert.equal(matchOwner('运营-李').ids[0], '1201');
+assert.equal(matchOwner('设计-王').ids[0], '1301');
 assert.deepEqual(normalizeDate('这周', sourceDate), {
   date: '2026-11-23',
   end: '2026-11-29',
@@ -131,12 +134,41 @@ assert.equal(
   2
 );
 const state = initialWorkspace(),
-  [compute, hr] = state.drafts;
+  [documentDraft, dataDraft, designDraft, tableDraft] = state.drafts,
+  [compute, hr] = extract(examples.join('\n\n'), 'ICT', sourceDate);
 assert.deepEqual(state.customLines, []);
 assert.equal(state.context, '');
-assert.equal(compute.context, '');
+assert.equal(state.lastExtraction?.source, 'ai');
+assert.equal(state.analysis?.sourceName, 'XXXX筹备群');
+assert.equal(state.drafts.length, 4);
+assert.equal(state.items.length, 3);
 assert.deepEqual(
-  [compute, hr].map((draft) => issues(draft, state.items)),
+  state.drafts.map((draft) => draft.values.title.value),
+  [
+    '建立业务沟通会议程共享文档并补充大纲',
+    '整理近期转化数据并填写共享文档',
+    '发送会议PPT模板和主视觉封面图',
+    '在共享表更新进度和最终文档地址',
+  ]
+);
+assert.deepEqual(
+  state.drafts.map((draft) => issues(draft, state.items)),
+  [[], [], [], ['missing', 'date']]
+);
+assert.equal(documentDraft.match.ids[0], '1101');
+assert.equal(dataDraft.match.ids[0], '1201');
+assert.equal(designDraft.match.ids[0], '1301');
+assert.equal(documentDraft.dates.date, sourceDate);
+assert.equal(dataDraft.dates.date, '2026-11-24');
+assert.equal(designDraft.dates.date, sourceDate);
+assert.equal(tableDraft.values.owner.value, '');
+assert.equal(tableDraft.values.due.value, '');
+for (const draft of state.drafts)
+  for (const sentences of Object.values(draft.evidence ?? {}))
+    for (const sentence of sentences ?? [])
+      assert.ok(draft.raw.includes(sentence));
+assert.deepEqual(
+  [compute, hr].map((draft) => issues(draft, [])),
   [
     ['missing', 'vague'],
     ['missing', 'date'],
@@ -155,15 +187,15 @@ assert.deepEqual(
 assert.equal(compute.values.due.value, '这周');
 assert.equal(hr.line, 'HR');
 assert.equal(hr.values.title.value, '预定各个地域的会议室');
-assert.equal(writeDraft(state, hr), state);
+assert.equal(writeDraft(state, tableDraft), state);
 const saved = writeDraft(state, {
-  ...hr,
-  edits: { owner: '0416', due: '2026-11-27' },
+  ...tableDraft,
+  edits: { owner: '0001', due: '2026-11-27' },
 });
-assert.equal(saved.items[0].edits.owner, '0416');
+assert.equal(saved.items[0].edits.owner, '0001');
 const duplicate = {
-  ...compute,
-  edits: { owner: '0001', due: '2026-11-29' },
+  ...documentDraft,
+  separate: false,
 };
 assert.deepEqual(issues(duplicate, state.items), ['duplicate']);
 const merged = changeAction(state, 'sample', 'merged', duplicate);

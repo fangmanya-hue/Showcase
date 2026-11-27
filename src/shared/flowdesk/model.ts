@@ -1,10 +1,11 @@
 import {
   businessLines,
   departments,
-  examples,
   lines,
   people,
+  sampleMessages,
   sampleText,
+  sampleWorkspaceVersion,
   sourceDate,
 } from './fixtures';
 
@@ -76,6 +77,7 @@ type Undo = {
   kind: 'merged' | 'closed';
 };
 export type Workspace = {
+  demoVersion?: number;
   context: string;
   input: string;
   reference: string;
@@ -432,29 +434,151 @@ export function status(item: Action, today: string) {
       ? 'overdue'
       : 'open';
 }
+
+function sampleDraft(
+  index: number,
+  fields: {
+    title: string;
+    titleEvidence: string;
+    owner?: string;
+    ownerEvidence?: string;
+    department?: string;
+    due?: string;
+    dueEvidence?: string;
+  }
+): Draft {
+  const sourceName = 'XXXX筹备群';
+  const raw = `群名:${sourceName}\n\n${sampleMessages[index]}`;
+  const empty = { value: '', sentence: '' };
+  const values: Record<Field, Evidence> = {
+    title: { value: fields.title, sentence: fields.titleEvidence },
+    owner: fields.owner
+      ? {
+          value: fields.owner,
+          sentence: fields.ownerEvidence ?? fields.titleEvidence,
+        }
+      : empty,
+    department: fields.department
+      ? { value: fields.department, sentence: fields.ownerEvidence ?? '' }
+      : empty,
+    due: fields.due
+      ? { value: fields.due, sentence: fields.dueEvidence ?? '' }
+      : empty,
+    priority: empty,
+    source: { value: sourceName, sentence: `群名:${sourceName}` },
+  };
+  const evidence = Object.fromEntries(
+    fieldsForEvidence(values).map(([field, value]) => [
+      field,
+      value.sentence ? [value.sentence] : [],
+    ])
+  ) as Draft['evidence'];
+  return {
+    id: `draft-sample-${index + 1}`,
+    line: 'ICT',
+    raw,
+    context: '',
+    reference: sourceDate,
+    values,
+    match: matchOwner(values.owner.value),
+    contactMatch: matchOwner(''),
+    mentions: { contact: empty, participants: [] },
+    dates: normalizeDate(values.due.value, sourceDate),
+    alternatives: {},
+    evidence,
+    edits: {},
+    extractionSource: 'ai',
+    separate: index < 3,
+  };
+}
+
+function fieldsForEvidence(values: Record<Field, Evidence>) {
+  return fields.map((field) => [field, values[field]] as const);
+}
+
+export function sampleWorkspaceDrafts(): Draft[] {
+  return [
+    sampleDraft(0, {
+      title: '建立业务沟通会议程共享文档并补充大纲',
+      titleEvidence: '我下午建一个共享文档，把大纲放进去。',
+      owner: '产品-张',
+      ownerEvidence: sampleMessages[0].split('\n')[1],
+      department: '产品',
+      due: '今天下午',
+      dueEvidence: '我下午建一个共享文档，把大纲放进去。',
+    }),
+    sampleDraft(1, {
+      title: '整理近期转化数据并填写共享文档',
+      titleEvidence:
+        '我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
+      owner: '运营-李',
+      ownerEvidence: sampleMessages[1].split('\n')[1],
+      department: '运营',
+      due: '明天上午',
+      dueEvidence:
+        '我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
+    }),
+    sampleDraft(2, {
+      title: '发送会议PPT模板和主视觉封面图',
+      titleEvidence:
+        '会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
+      owner: '设计-王',
+      ownerEvidence: sampleMessages[2].split('\n')[1],
+      department: '设计',
+      due: '今天下班前',
+      dueEvidence: '会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
+    }),
+    sampleDraft(3, {
+      title: '在共享表更新进度和最终文档地址',
+      titleEvidence: '大家记得把进度和最终文档地址更新在共享表里。',
+    }),
+  ];
+}
+
 export function initialWorkspace(): Workspace {
-  const drafts = extract(examples.join('\n\n'), lines[0], sourceDate);
+  const drafts = sampleWorkspaceDrafts();
   const make = (d: Draft, id: string): Action => ({
     ...d,
     id,
+    separate: undefined,
     closed: false,
     sources: [d.raw],
-    history: [{ kind: 'sample', at: sourceDate, source: 'fixture' }],
+    history: [{ kind: 'sample', at: sourceDate, source: 'system' }],
   });
-  const confirmed: Draft = {
-    ...drafts[0],
-    edits: { ...drafts[0].edits, owner: '0001', due: '2026-11-29' },
-  };
   return {
+    demoVersion: sampleWorkspaceVersion,
     context: '',
     input: sampleText,
     reference: sourceDate,
-    line: '计算',
+    line: lines[0],
     customLines: [],
     drafts,
-    items: [make(confirmed, 'sample')],
+    items: [
+      make(drafts[0], 'sample'),
+      make(drafts[1], 'sample-data'),
+      make(drafts[2], 'sample-design'),
+    ],
     undo: [],
-    lastExtraction: { source: 'rule', at: sourceDate },
+    analysis: {
+      sourceName: 'XXXX筹备群',
+      summary:
+        '围绕下周二业务沟通会，团队正在准备议程文档、转化数据和会议视觉材料。',
+      participants: ['产品-张', '运营-李', '设计-王'],
+      decisions: [
+        {
+          text: '使用共享文档沉淀会议大纲和各方材料',
+          evidence: '我下午建一个共享文档，把大纲放进去。',
+        },
+      ],
+      constraints: [],
+      openQuestions: [
+        {
+          text: '确认共享表更新事项的负责人和截止时间',
+          evidence: '大家记得把进度和最终文档地址更新在共享表里。',
+        },
+      ],
+    },
+    lastExtraction: { source: 'ai', at: sourceDate },
   };
 }
 export function writeDraft(state: Workspace, d: Draft): Workspace {
