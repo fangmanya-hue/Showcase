@@ -24,7 +24,7 @@
     "email_sign_in": "Sign in with Email",
     "google_sign_in_title": "Continue with Google",
     "fake_title": "Continue with Google",
-    "fake_description": "Sign in to organize your own conversations. The sample remains open to everyone.",
+    "fake_description": "Sign in to organize your own conversations.",
     "fake_connecting": "Connecting to Google…",
     "fake_wait_hint": "Checking the network and authorization status. Keep this page open.",
     "unavailable_title": "Google sign-in is temporarily unavailable",

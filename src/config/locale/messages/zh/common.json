@@ -24,7 +24,7 @@
     "email_sign_in": "使用邮箱登录",
     "google_sign_in_title": "使用 Google 账号登录",
     "fake_title": "使用 Google 账号继续",
-    "fake_description": "登录后即可整理自己的群聊内容。示范案例仍可公开查看。",
+    "fake_description": "登录后即可整理自己的群聊内容。",
     "fake_connecting": "正在连接 Google，请稍候…",
     "fake_wait_hint": "正在验证网络与授权状态，请不要关闭页面。",
     "unavailable_title": "Google 登录暂时不可用",
