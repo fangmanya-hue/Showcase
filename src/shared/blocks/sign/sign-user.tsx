@@ -37,10 +37,12 @@ export function SignUser({
   isScrolled,
   signButtonSize = 'sm',
   userNav,
+  enableOneTap = true,
 }: {
   isScrolled?: boolean;
   signButtonSize?: 'default' | 'sm' | 'lg' | 'icon';
   userNav?: UserNav;
+  enableOneTap?: boolean;
 }) {
   const t = useTranslations('common.sign');
   const router = useRouter();
@@ -75,8 +77,8 @@ export function SignUser({
   const oneTapInitialized = useRef(false);
 
   useEffect(() => {
-    fetchConfigs();
-  }, []);
+    if (enableOneTap) fetchConfigs();
+  }, [enableOneTap, fetchConfigs]);
 
   // set is check sign
   useEffect(() => {
@@ -86,6 +88,7 @@ export function SignUser({
   // show one tap if not initialized
   useEffect(() => {
     if (
+      enableOneTap &&
       configs &&
       configs.google_client_id &&
       configs.google_one_tap_enabled === 'true' &&
@@ -96,7 +99,7 @@ export function SignUser({
       oneTapInitialized.current = true;
       showOneTap(configs);
     }
-  }, [configs, session, isPending]);
+  }, [configs, enableOneTap, session, isPending, showOneTap]);
 
   // set user
   useEffect(() => {

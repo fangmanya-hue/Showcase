@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { flowdeskPaths as paths } from '@/config/flowdesk';
+import { useAppContext } from '@/shared/contexts/app';
 
 import { EvidenceFields, SourceEvidence, type EvidenceTarget } from './fields';
 import {
@@ -138,6 +139,7 @@ type Props = { state: Workspace; change: Change };
 function Intake({ state, change }: Props) {
   const t = useTranslations(),
     router = useRouter(),
+    { user } = useAppContext(),
     [addingLine, setAddingLine] = useState(false),
     [newLine, setNewLine] = useState(''),
     [lineNotice, setLineNotice] = useState(''),
@@ -148,6 +150,11 @@ function Intake({ state, change }: Props) {
     : state.input === sampleText
       ? 'example'
       : 'formal';
+  function requireAuthentication() {
+    if (user) return true;
+    router.push('/sign-in?callbackUrl=%2Fintake');
+    return false;
+  }
   function addLine() {
     const name = newLine.trim();
     if (!name) return;
@@ -168,6 +175,7 @@ function Intake({ state, change }: Props) {
     setAddingLine(false);
   }
   async function generateDrafts() {
+    if (!requireAuthentication()) return;
     setExtracting(true);
     try {
       const response = await fetch('/api/flowdesk/extract', {
@@ -234,13 +242,20 @@ function Intake({ state, change }: Props) {
           rows={14}
           placeholder={t('intake.form.messagePlaceholder')}
           value={state.input}
-          onFocus={() => {
+          onFocus={(event) => {
+            if (!requireAuthentication()) {
+              event.currentTarget.blur();
+              return;
+            }
             const input = valueOnIntakeFocus(state.input);
             if (input !== state.input) {
               change({ ...state, input });
             }
           }}
-          onChange={(event) => change({ ...state, input: event.target.value })}
+          onChange={(event) => {
+            if (!requireAuthentication()) return;
+            change({ ...state, input: event.target.value });
+          }}
           onBlur={() => {
             const input = valueOnIntakeBlur(state.input);
             if (input !== state.input) {

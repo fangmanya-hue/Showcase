@@ -19,19 +19,14 @@ export async function proxy(request: NextRequest) {
     ? pathname.slice(locale.length + 1)
     : pathname;
 
-  const isFlowDeskWorkspaceRoute =
-    pathWithoutLocale === '/intake' ||
-    pathWithoutLocale === '/review' ||
-    pathWithoutLocale === '/items' ||
-    pathWithoutLocale.startsWith('/items/');
-
   const requiresSession =
-    isFlowDeskWorkspaceRoute ||
     pathWithoutLocale.startsWith('/admin') ||
     pathWithoutLocale.startsWith('/settings') ||
     pathWithoutLocale.startsWith('/activity');
 
-  // FlowDesk workspace, settings and administrative surfaces require a session.
+  // FlowDesk's demonstration workspace is public. Authentication is requested
+  // at the moment a visitor starts editing or submits content in the client.
+  // Settings and administrative surfaces still require a real session.
   if (requiresSession) {
     // Check if session cookie exists
     const sessionCookie = getSessionCookie(request);

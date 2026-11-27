@@ -38,6 +38,7 @@ export async function FlowdeskShell({ children }: { children: ReactNode }) {
             <LanguageSwitch />
             {envConfigs.auth_secret ? (
               <SignUser
+                enableOneTap={false}
                 userNav={{
                   show_name: true,
                   show_credits: true,

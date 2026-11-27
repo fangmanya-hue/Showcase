@@ -1,25 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 
-import { redirect } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { defaultLocale } from '@/config/locale';
-import { SignIn } from '@/shared/blocks/sign/sign-in';
-import { getAllConfigs } from '@/shared/models/config';
-import { getSignUser } from '@/shared/models/user';
+import { FlowdeskFakeSignIn } from '@/shared/blocks/sign/flowdesk-fake-sign-in';
 
 function safeInternalPath(raw?: string) {
   if (!raw) return '/';
   if (!raw.startsWith('/')) return '/';
   return raw;
-}
-
-function stripLocalePrefix(path: string, locale: string) {
-  if (!path?.startsWith('/')) return '/';
-  if (locale === defaultLocale) return path;
-  if (path === `/${locale}`) return '/';
-  if (path.startsWith(`/${locale}/`))
-    return path.slice(locale.length + 1) || '/';
-  return path;
 }
 
 export async function generateMetadata({
@@ -32,7 +20,7 @@ export async function generateMetadata({
   const t = await getTranslations('common');
 
   return {
-    title: `${t('sign.sign_in_title')} - ${t('metadata.title')}`,
+    title: `${t('sign.fake_title')} - ${t('metadata.title')}`,
     alternates: {
       canonical:
         locale !== defaultLocale
@@ -44,36 +32,11 @@ export async function generateMetadata({
 
 export default async function SignInPage({
   searchParams,
-  params,
 }: {
   searchParams: Promise<{
     callbackUrl?: string;
-    email?: string;
-    verified?: string;
   }>;
-  params: Promise<{ locale: string }>;
 }) {
-  const { callbackUrl, email } = await searchParams;
-  const { locale } = await params;
-
-  // If user is already signed in, don't show sign-in form again.
-  const sessionUser = await getSignUser();
-  if (sessionUser) {
-    const target = stripLocalePrefix(safeInternalPath(callbackUrl), locale);
-    redirect({ href: target || '/', locale });
-  }
-
-  // Sign-in must read deployment environment variables as well as database
-  // settings. Reading database settings alone hides providers configured in
-  // Vercel even when their environment variables are valid.
-  const configs = await getAllConfigs();
-
-  return (
-    <SignIn
-      configs={configs}
-      callbackUrl={callbackUrl || '/'}
-      defaultEmail={email || ''}
-      googleOnly
-    />
-  );
+  const { callbackUrl } = await searchParams;
+  return <FlowdeskFakeSignIn callbackUrl={safeInternalPath(callbackUrl)} />;
 }
