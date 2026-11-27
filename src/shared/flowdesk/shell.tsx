@@ -53,7 +53,7 @@ export async function FlowdeskShell({ children }: { children: ReactNode }) {
                 {t('nav.sign')}
               </Link>
             )}
-            <Link className="fd-btn fd-small" href={flowdeskPaths.list}>
+            <Link className="fd-btn fd-small" href={flowdeskPaths.intake}>
               {t('nav.workspace')}
             </Link>
           </div>

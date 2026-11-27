@@ -24,8 +24,9 @@ export async function proxy(request: NextRequest) {
     pathWithoutLocale.startsWith('/settings') ||
     pathWithoutLocale.startsWith('/activity');
 
-  // FlowDesk's demonstration workspace is public. Authentication is requested
-  // at the moment a visitor starts editing or submits content in the client.
+  // FlowDesk's home, intake, review, list, and detail pages stay public.
+  // Authentication is requested only when a visitor submits content for AI
+  // extraction in the client.
   // Settings and administrative surfaces still require a real session.
   if (requiresSession) {
     // Check if session cookie exists
