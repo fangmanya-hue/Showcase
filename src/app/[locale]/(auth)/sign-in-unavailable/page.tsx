@@ -1,6 +1,7 @@
 import { WifiOff } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
+import { flowdeskPaths } from '@/config/flowdesk';
 import { Link } from '@/core/i18n/navigation';
 
 export async function generateMetadata() {
@@ -23,7 +24,7 @@ export default async function SignInUnavailablePage() {
           {t('unavailable_description')}
         </p>
         <Link
-          href="/"
+          href={flowdeskPaths.intake}
           className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-6 text-base font-medium text-white shadow-[0_10px_28px_rgba(37,99,235,0.2)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-[0_14px_32px_rgba(37,99,235,0.24)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
         >
           {t('back_to_demo')}
