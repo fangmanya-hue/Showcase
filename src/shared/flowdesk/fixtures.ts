@@ -60,35 +60,42 @@ export const people = [
     name: '张宁',
     dept: '产品',
     short: ['张'],
-    aliases: ['产品-张', '产品张'],
+    aliases: ['产品-张宁', '产品张宁', '产品-张', '产品张'],
   },
   {
     id: '1201',
     name: '李楠',
     dept: '运营',
     short: ['李'],
-    aliases: ['运营-李', '运营李'],
+    aliases: ['运营-李楠', '运营李楠', '运营-李', '运营李'],
   },
   {
     id: '1301',
-    name: '王敏',
+    name: '王敏敏',
     dept: '设计',
     short: ['王'],
-    aliases: ['设计-王', '设计王'],
+    aliases: ['设计-王敏敏', '设计王敏敏', '设计-王', '设计王'],
   },
 ];
 export const departments = [...new Set(people.map((person) => person.dept))];
-export const sourceDate = '2026-11-23';
+export const sourceDate = '2026-10-28';
 export const sampleRequirement =
   '识别部门沟通中需要继续推进的工作，整理为有负责人、有截止时间、可核对和可追踪的事项。';
 export const sampleMessages = [
+  '10/28 10:00\n产品-张宁：@所有人 大家上午好。为了顺利推进下周二的业务沟通会，咱们今天先把初步议程定下来。我下午建一个共享文档，把大纲放进去。',
+  '10/28 10:05\n运营-李楠：收到。我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
+  '10/28 10:08\n设计-王敏敏：会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
+  '10/28 10:18\n产品-张宁：好的，辛苦了各位。大家记得把进度和最终文档地址更新在共享表里。',
+];
+export const previousSampleText = [
+  '群名:XXXX筹备群',
   '今天 10:00\n产品-张：@所有人 大家上午好。为了顺利推进下周二的业务沟通会，咱们今天先把初步议程定下来。我下午建一个共享文档，把大纲放进去。',
   '今天 10:05\n运营-李：收到。我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
   '今天 10:08\n设计-王：会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
   '今天 10:18\n产品-张：好的，辛苦了各位。大家记得把进度和最终文档地址更新在共享表里。',
-];
+].join('\n\n');
 export const sampleText = ['群名:XXXX筹备群', ...sampleMessages].join('\n\n');
-export const sampleWorkspaceVersion = 2;
+export const sampleWorkspaceVersion = 3;
 
 // Stable rule fixtures keep the preloaded review/list states deterministic.
 // They are not shown as the intake example.
@@ -100,7 +107,7 @@ export const examples = [
 export const showcase = {
   title: '建立业务沟通会议程共享文档',
   name: '张宁（产品 · 工号 1101）',
-  date: '2026-11-23',
+  date: '2026-10-28',
   message: sampleMessages[0],
   evidence: '我下午建一个共享文档，把大纲放进去。',
 };

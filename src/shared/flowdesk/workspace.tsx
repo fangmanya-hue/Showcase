@@ -12,6 +12,7 @@ import {
   businessLines,
   examples,
   people,
+  previousSampleText,
   sampleRequirement,
   sampleText,
   sampleWorkspaceVersion,
@@ -53,7 +54,9 @@ function useLocalWorkspace() {
       const restored = JSON.parse(saved) as Workspace;
       if (
         restored.demoVersion !== sampleWorkspaceVersion &&
-        (restored.input === legacySampleText || restored.input === sampleText)
+        (restored.input === legacySampleText ||
+          restored.input === previousSampleText ||
+          restored.input === sampleText)
       ) {
         const current = initialWorkspace();
         const migrated = {

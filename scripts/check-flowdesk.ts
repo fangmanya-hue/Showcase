@@ -90,6 +90,9 @@ assert.deepEqual(examples, [
   'hr安排了全员沟通会，需要预定各个地域的会议室，让大家线下参加会议',
 ]);
 assert.match(sampleText, /^群名:XXXX筹备群/);
+assert.match(sampleText, /10\/28 10:00\n产品-张宁/);
+assert.match(sampleText, /10\/28 10:05\n运营-李楠/);
+assert.match(sampleText, /10\/28 10:08\n设计-王敏敏/);
 assert.equal(detectBusinessLine('计算团队需要继续推进这项工作', 'ICT'), '计算');
 assert.equal(detectBusinessLine('hr 安排全员沟通会', 'ICT'), 'HR');
 assert.equal(valueOnIntakeFocus(sampleText), '');
@@ -110,19 +113,22 @@ assert.equal(matchOwner('HR小周').status, 'not_found');
 assert.equal(matchOwner('产品-张').ids[0], '1101');
 assert.equal(matchOwner('运营-李').ids[0], '1201');
 assert.equal(matchOwner('设计-王').ids[0], '1301');
+assert.equal(matchOwner('产品-张宁').ids[0], '1101');
+assert.equal(matchOwner('运营-李楠').ids[0], '1201');
+assert.equal(matchOwner('设计-王敏敏').ids[0], '1301');
 assert.deepEqual(normalizeDate('这周', sourceDate), {
-  date: '2026-11-23',
-  end: '2026-11-29',
+  date: '2026-10-26',
+  end: '2026-11-01',
   ambiguous: true,
 });
 assert.deepEqual(normalizeDate('下周找个时间', sourceDate), {
-  date: '2026-11-30',
-  end: '2026-12-06',
+  date: '2026-11-02',
+  end: '2026-11-08',
   ambiguous: true,
 });
-assert.equal(normalizeDate('下周天', sourceDate).date, '2026-12-06');
+assert.equal(normalizeDate('下周天', sourceDate).date, '2026-11-08');
 assert.equal(normalizeDate('2026-02-30', sourceDate).date, '');
-assert.equal(normalizeDate('明天', sourceDate).date, '2026-11-24');
+assert.equal(normalizeDate('明天', sourceDate).date, '2026-10-29');
 assert.equal(normalizeDate('11/27 18:00', '2026-11-26').date, '2026-11-27');
 assert.equal(
   normalizeDate('12月1日周二14:00到16:30', '2026-11-26').date,
@@ -159,7 +165,7 @@ assert.equal(documentDraft.match.ids[0], '1101');
 assert.equal(dataDraft.match.ids[0], '1201');
 assert.equal(designDraft.match.ids[0], '1301');
 assert.equal(documentDraft.dates.date, sourceDate);
-assert.equal(dataDraft.dates.date, '2026-11-24');
+assert.equal(dataDraft.dates.date, '2026-10-29');
 assert.equal(designDraft.dates.date, sourceDate);
 assert.equal(tableDraft.values.owner.value, '');
 assert.equal(tableDraft.values.due.value, '');

@@ -501,7 +501,7 @@ export function sampleWorkspaceDrafts(): Draft[] {
     sampleDraft(0, {
       title: '建立业务沟通会议程共享文档并补充大纲',
       titleEvidence: '我下午建一个共享文档，把大纲放进去。',
-      owner: '产品-张',
+      owner: '产品-张宁',
       ownerEvidence: sampleMessages[0].split('\n')[1],
       department: '产品',
       due: '今天下午',
@@ -511,7 +511,7 @@ export function sampleWorkspaceDrafts(): Draft[] {
       title: '整理近期转化数据并填写共享文档',
       titleEvidence:
         '我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
-      owner: '运营-李',
+      owner: '运营-李楠',
       ownerEvidence: sampleMessages[1].split('\n')[1],
       department: '运营',
       due: '明天上午',
@@ -522,7 +522,7 @@ export function sampleWorkspaceDrafts(): Draft[] {
       title: '发送会议PPT模板和主视觉封面图',
       titleEvidence:
         '会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
-      owner: '设计-王',
+      owner: '设计-王敏敏',
       ownerEvidence: sampleMessages[2].split('\n')[1],
       department: '设计',
       due: '今天下班前',
@@ -563,7 +563,7 @@ export function initialWorkspace(): Workspace {
       sourceName: 'XXXX筹备群',
       summary:
         '围绕下周二业务沟通会，团队正在准备议程文档、转化数据和会议视觉材料。',
-      participants: ['产品-张', '运营-李', '设计-王'],
+      participants: ['产品-张宁', '运营-李楠', '设计-王敏敏'],
       decisions: [
         {
           text: '使用共享文档沉淀会议大纲和各方材料',
