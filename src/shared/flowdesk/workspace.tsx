@@ -10,11 +10,13 @@ import { flowdeskPaths as paths } from '@/config/flowdesk';
 import { EvidenceFields, SourceEvidence, type EvidenceTarget } from './fields';
 import {
   businessLines,
+  examples,
   people,
   sampleRequirement,
   sampleText,
   sourceDate,
 } from './fixtures';
+import { valueOnIntakeBlur, valueOnIntakeFocus } from './input-state';
 import {
   changeAction,
   dueDate,
@@ -34,6 +36,7 @@ import {
 } from './model';
 
 const storageKey = 'flowdesk.workspace.v5';
+const legacySampleText = examples.join('\n\n');
 type View = keyof typeof paths;
 type Change = (state: Workspace) => void;
 function useLocalWorkspace() {
@@ -42,7 +45,24 @@ function useLocalWorkspace() {
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem(storageKey);
-      setState(saved ? JSON.parse(saved) : initialWorkspace());
+      if (!saved) {
+        setState(initialWorkspace());
+        return;
+      }
+      const restored = JSON.parse(saved) as Workspace;
+      if (restored.input === legacySampleText) {
+        const migrated = {
+          ...restored,
+          input: sampleText,
+          drafts: [],
+          analysis: undefined,
+          lastExtraction: undefined,
+        };
+        sessionStorage.setItem(storageKey, JSON.stringify(migrated));
+        setState(migrated);
+        return;
+      }
+      setState(restored);
     } catch {
       setState(initialWorkspace());
       setWarning(true);
@@ -208,7 +228,19 @@ function Intake({ state, change }: Props) {
           rows={14}
           placeholder={t('intake.form.messagePlaceholder')}
           value={state.input}
+          onFocus={() => {
+            const input = valueOnIntakeFocus(state.input);
+            if (input !== state.input) {
+              change({ ...state, input });
+            }
+          }}
           onChange={(event) => change({ ...state, input: event.target.value })}
+          onBlur={() => {
+            const input = valueOnIntakeBlur(state.input);
+            if (input !== state.input) {
+              change({ ...state, input });
+            }
+          }}
         />
       </label>
       <small>{t('intake.form.hint')}</small>

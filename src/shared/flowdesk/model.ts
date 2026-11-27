@@ -1,6 +1,7 @@
 import {
   businessLines,
   departments,
+  examples,
   lines,
   people,
   sampleText,
@@ -432,7 +433,7 @@ export function status(item: Action, today: string) {
       : 'open';
 }
 export function initialWorkspace(): Workspace {
-  const drafts = extract(sampleText, lines[0], sourceDate);
+  const drafts = extract(examples.join('\n\n'), lines[0], sourceDate);
   const make = (d: Draft, id: string): Action => ({
     ...d,
     id,

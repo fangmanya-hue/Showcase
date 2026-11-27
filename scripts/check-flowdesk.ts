@@ -15,6 +15,10 @@ import {
   sourceDate,
 } from '../src/shared/flowdesk/fixtures';
 import {
+  valueOnIntakeBlur,
+  valueOnIntakeFocus,
+} from '../src/shared/flowdesk/input-state';
+import {
   changeAction,
   detectBusinessLine,
   extract,
@@ -85,8 +89,14 @@ assert.deepEqual(examples, [
   '这周要跟计算义总交流一下立项的事情，跟义总秘书约下时间',
   'hr安排了全员沟通会，需要预定各个地域的会议室，让大家线下参加会议',
 ]);
-assert.equal(detectBusinessLine(examples[0], 'ICT'), '计算');
-assert.equal(detectBusinessLine(examples[1], 'ICT'), 'HR');
+assert.match(sampleText, /^群名:XXXX筹备群/);
+assert.equal(detectBusinessLine('计算团队需要继续推进这项工作', 'ICT'), '计算');
+assert.equal(detectBusinessLine('hr 安排全员沟通会', 'ICT'), 'HR');
+assert.equal(valueOnIntakeFocus(sampleText), '');
+assert.equal(valueOnIntakeFocus('用户已经输入的内容'), '用户已经输入的内容');
+assert.equal(valueOnIntakeBlur(''), sampleText);
+assert.equal(valueOnIntakeBlur('   '), sampleText);
+assert.equal(valueOnIntakeBlur('用户已经输入的内容'), '用户已经输入的内容');
 assert.equal(matchOwner('工号0231 秘书A').via, 'employee');
 assert.equal(matchOwner('计算 · 秘书A').via, 'full');
 assert.deepEqual(matchOwner('计算义总秘书'), {

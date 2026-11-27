@@ -60,16 +60,25 @@ export const departments = [...new Set(people.map((person) => person.dept))];
 export const sourceDate = '2026-11-23';
 export const sampleRequirement =
   '识别部门沟通中需要继续推进的工作，整理为有负责人、有截止时间、可核对和可追踪的事项。';
+export const sampleMessages = [
+  '今天 10:00\n产品-张：@所有人 大家上午好。为了顺利推进下周二的业务沟通会，咱们今天先把初步议程定下来。我下午建一个共享文档，把大纲放进去。',
+  '今天 10:05\n运营-李：收到。我负责讲近期转化数据，明天上午把数据整理好，直接填进文档里。',
+  '今天 10:08\n设计-王：会议用的通用PPT模板和主视觉封面图，我今天下班前发到群里。',
+  '今天 10:18\n产品-张：好的，辛苦了各位。大家记得把进度和最终文档地址更新在共享表里。',
+];
+export const sampleText = ['群名:XXXX筹备群', ...sampleMessages].join('\n\n');
+
+// Stable rule fixtures keep the preloaded review/list states deterministic.
+// They are not shown as the intake example.
 export const examples = [
   '这周要跟计算义总交流一下立项的事情，跟义总秘书约下时间',
   'hr安排了全员沟通会，需要预定各个地域的会议室，让大家线下参加会议',
 ];
-export const sampleText = examples.join('\n\n');
 
 export const showcase = {
-  title: '联系义总秘书，预约立项沟通时间',
+  title: '建立业务沟通会议程共享文档',
   name: '待当前操作者确认',
-  date: '2026-11-23 – 2026-11-29',
-  message: examples[0],
-  evidence: '跟义总秘书约下时间',
+  date: '2026-11-23',
+  message: sampleMessages[0],
+  evidence: '我下午建一个共享文档，把大纲放进去。',
 };
